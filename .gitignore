@@ -3,3 +3,4 @@ Properties.class
 *.log
 .vscode/
 env/
+/target
