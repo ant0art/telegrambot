@@ -1,4 +1,5 @@
 Properties.java
+Properties.class
 *.log
 .vscode/
 env/
