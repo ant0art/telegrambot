@@ -3,4 +3,4 @@ Properties.class
 *.log
 .vscode/
 env/
-/target
+dependencies.txt
