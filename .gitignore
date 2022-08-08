@@ -2,4 +2,5 @@
 .vscode/
 env/
 dependencies.txt
+Properties.java
 

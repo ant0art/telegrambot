@@ -1,5 +1,6 @@
 package bot.dompp;
 
+import java.util.Map;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -13,8 +14,9 @@ import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
  *
  */
 public class Bot extends TelegramLongPollingBot {
+	private static final Map<String, String> getenv = System.getenv();
 
-    public static void main(String[] args) {
+	public static void main(String[] args) {
         try {
             TelegramBotsApi telegramBotsApi = new TelegramBotsApi(DefaultBotSession.class);
             telegramBotsApi.registerBot(new Bot());
@@ -42,11 +44,11 @@ public class Bot extends TelegramLongPollingBot {
 
     @Override
     public String getBotUsername() {
-        return Properties.BOT_NAME.getValue();
+		return getenv.get("BOT_NAME");
     }
 
     @Override
     public String getBotToken() {
-        return Properties.BOT_TOKEN.getValue();
+        return getenv.get("BOT_TOKEN");
     }
 }
