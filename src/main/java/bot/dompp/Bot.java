@@ -19,7 +19,7 @@ public class Bot extends TelegramLongPollingBot {
 	public static void main(String[] args) {
         try {
             TelegramBotsApi telegramBotsApi = new TelegramBotsApi(DefaultBotSession.class);
-            telegramBotsApi.registerBot(new Bot(getenv.get("BOT_NAME"), getenv.get("BOT_TOKEN")));
+            telegramBotsApi.registerBot(new Bot());
 
         } catch (TelegramApiException e) {
             e.printStackTrace();
