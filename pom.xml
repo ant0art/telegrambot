@@ -66,6 +66,15 @@
 				</plugin>
 
 				<plugin>
+					<executions>
+						<execution>
+							<phase>install</phase>
+							<goals>
+								<goal>java</goal>
+							</goals>
+						</execution>
+					</executions>
+
                     <artifactId>maven-compiler-plugin</artifactId>
                     <version>3.6.2</version>
                 </plugin>
