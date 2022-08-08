@@ -13,10 +13,10 @@ import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
  * Hello world!
  *
  */
-public class Bot extends TelegramLongPollingBot {
+public class Bot {
 
-	private static final String BOT_TOKEN = "5595912289:AAEZ8vLLBtdQPX2phjsdEhiup_H5l6Ar-h8";
-	private static final String BOT_NAME = "@dom_pp_bot";
+	// private static final String BOT_TOKEN = "5595912289:AAEZ8vLLBtdQPX2phjsdEhiup_H5l6Ar-h8";
+	// private static final String BOT_NAME = "@dom_pp_bot";
 	// private static final Map<String, String> getenv = System.getenv();
 
 	// private final String BOT_TOKEN;
@@ -28,41 +28,42 @@ public class Bot extends TelegramLongPollingBot {
 	// }
 
 	public static void main(String[] args) {
-		try {
-			TelegramBotsApi telegramBotsApi = new TelegramBotsApi(DefaultBotSession.class);
-			// telegramBotsApi.registerBot(new Bot(getenv.get("BOT_NAME"), getenv.get("BOT_TOKEN")));
-			telegramBotsApi.registerBot(new Bot());
+		// try {
+		// 	TelegramBotsApi telegramBotsApi = new TelegramBotsApi(DefaultBotSession.class);
+		// 	// telegramBotsApi.registerBot(new Bot(getenv.get("BOT_NAME"), getenv.get("BOT_TOKEN")));
+		// 	telegramBotsApi.registerBot(new Bot());
 
-		} catch (TelegramApiException e) {
-			e.printStackTrace();
-		}
+		// } catch (TelegramApiException e) {
+		// 	e.printStackTrace();
+		// }
+		System.out.println("Hello world!");
 	}
 
-	@Override
-	public void onUpdateReceived(Update update) {
-		Message incomMess = update.getMessage();
-		String incomMessChatId = incomMess.getChatId().toString();
-		String outMeString = incomMess.getText();
-		SendMessage outMess = new SendMessage();
+	// @Override
+	// public void onUpdateReceived(Update update) {
+	// 	Message incomMess = update.getMessage();
+	// 	String incomMessChatId = incomMess.getChatId().toString();
+	// 	String outMeString = incomMess.getText();
+	// 	SendMessage outMess = new SendMessage();
 
-		outMess.setChatId(incomMessChatId);
-		outMess.setText(outMeString);
-		try {
-			execute(outMess);
-		} catch (TelegramApiException e) {
-			e.printStackTrace();
-		}
-	}
+	// 	outMess.setChatId(incomMessChatId);
+	// 	outMess.setText(outMeString);
+	// 	try {
+	// 		execute(outMess);
+	// 	} catch (TelegramApiException e) {
+	// 		e.printStackTrace();
+	// 	}
+	// }
 
-	@Override
-	public String getBotUsername() {
-		// return getenv.get("BOT_NAME");
-		return BOT_NAME;
-	}
+	// @Override
+	// public String getBotUsername() {
+	// 	// return getenv.get("BOT_NAME");
+	// 	return BOT_NAME;
+	// }
 
-	@Override
-	public String getBotToken() {
-		// return getenv.get("BOT_TOKEN");
-		return BOT_TOKEN;
-	}
+	// @Override
+	// public String getBotToken() {
+	// 	// return getenv.get("BOT_TOKEN");
+	// 	return BOT_TOKEN;
+	// }
 }
