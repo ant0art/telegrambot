@@ -64,23 +64,12 @@
 					<artifactId>maven-resources-plugin</artifactId>
 					<version>3.0.2</version>
 				</plugin>
-				
+
 				<plugin>
-					<groupId>org.codehaus.mojo</groupId>
-					<artifactId>exec-maven-plugin</artifactId>
-					<version>1.2.1</version>
-					<executions>
-						<execution>
-							<phase>compile</phase>
-							<goals>
-								<goal>java</goal>
-							</goals>
-						</execution>
-					</executions>
-					<configuration>
-						<mainClass>bot.dompp.Bot</mainClass>
-					</configuration>
-				</plugin>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>3.6.2</version>
+                </plugin>
+
 
 				<plugin>
 					<artifactId>maven-surefire-plugin</artifactId>
