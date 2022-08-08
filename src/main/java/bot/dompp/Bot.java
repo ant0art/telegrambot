@@ -15,23 +15,23 @@ import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
  */
 public class Bot extends TelegramLongPollingBot {
 
-	// private static final String BOT_TOKEN = "5595912289:AAEZ8vLLBtdQPX2phjsdEhiup_H5l6Ar-h8";
-	// private static final String BOT_NAME = "@dom_pp_bot";
-	private static final Map<String, String> getenv = System.getenv();
+	private static final String BOT_TOKEN = "5595912289:AAEZ8vLLBtdQPX2phjsdEhiup_H5l6Ar-h8";
+	private static final String BOT_NAME = "@dom_pp_bot";
+	// private static final Map<String, String> getenv = System.getenv();
 
-	private final String BOT_TOKEN;
-	private final String BOT_NAME;
+	// private final String BOT_TOKEN;
+	// private final String BOT_NAME;
 
-	public Bot(String botName, String botToken) {
-		this.BOT_NAME = botName;
-		this.BOT_TOKEN = botToken;
-	}
+	// public Bot(String botName, String botToken) {
+	// 	this.BOT_NAME = botName;
+	// 	this.BOT_TOKEN = botToken;
+	// }
 
 	public static void main(String[] args) {
 		try {
 			TelegramBotsApi telegramBotsApi = new TelegramBotsApi(DefaultBotSession.class);
-			telegramBotsApi.registerBot(new Bot(getenv.get("BOT_NAME"), getenv.get("BOT_TOKEN")));
-			// telegramBotsApi.registerBot(new Bot());
+			// telegramBotsApi.registerBot(new Bot(getenv.get("BOT_NAME"), getenv.get("BOT_TOKEN")));
+			telegramBotsApi.registerBot(new Bot());
 
 		} catch (TelegramApiException e) {
 			e.printStackTrace();
@@ -56,13 +56,13 @@ public class Bot extends TelegramLongPollingBot {
 
 	@Override
 	public String getBotUsername() {
-		return getenv.get("BOT_NAME");
-		// return BOT_NAME;
+		// return getenv.get("BOT_NAME");
+		return BOT_NAME;
 	}
 
 	@Override
 	public String getBotToken() {
-		return getenv.get("BOT_TOKEN");
-		// return BOT_TOKEN;
+		// return getenv.get("BOT_TOKEN");
+		return BOT_TOKEN;
 	}
 }
