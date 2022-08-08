@@ -51,7 +51,7 @@
 	</dependencies>
 
 	<build>
-
+		<defaultGoal>compile</defaultGoal>
 		<pluginManagement>
 			<!-- lock down plugins versions to avoid using Maven defaults (may be moved to parent pom) -->
 			<plugins>
@@ -71,21 +71,6 @@
                     <version>3.6.2</version>
                 </plugin>
 
-				<plugin>
-					<groupId>org.codehaus.mojo</groupId>
-					<artifactId>exec-maven-plugin</artifactId>
-					<version>1.2.1</version>
-					<executions>
-						<execution>
-							<goals>
-								<goal>java</goal>
-							</goals>
-						</execution>
-					</executions>
-					<configuration>
-						<mainClass>bot.dompp.Bot</mainClass>
-					</configuration>
-				</plugin>
 
 				<plugin>
 					<artifactId>maven-surefire-plugin</artifactId>
