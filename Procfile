@@ -1,1 +1,1 @@
-worker: java -cp ./target/classes/* bot.dompp.Bot.class
+worker: java -cp ./target/classes/* bot.dompp.Bot
