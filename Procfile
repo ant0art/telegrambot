@@ -1,1 +1,1 @@
-worker: java -cp ./target/classes/* bot.dompp.Bot
+web: java -jar target/telegrambot-1.0-SNAPSHOT.jar
