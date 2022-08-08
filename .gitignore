@@ -4,5 +4,4 @@ Properties.class
 .vscode/
 env/
 dependencies.txt
-maven-archiver/
-target/maven-status
+
