@@ -1,7 +1,7 @@
 package bot.dompp;
 
 public enum Properties {
-	BOT_NAME("@dom_pp_bot"), BOT_TOKEN("");
+	BOT_NAME(""), BOT_TOKEN("");
 
 	private final String value;
 
