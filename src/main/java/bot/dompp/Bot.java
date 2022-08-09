@@ -14,6 +14,7 @@ public class Bot extends TelegramLongPollingBot {
 	private static final String BOT_NAME = "@dom_pp_bot";
 
 	public static void main(String[] args) {
+		System.out.println("Hello world!");
 		try {
 			TelegramBotsApi telegramBotsApi = new TelegramBotsApi(DefaultBotSession.class);
 			telegramBotsApi.registerBot(new Bot());
