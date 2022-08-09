@@ -10,11 +10,7 @@ import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 
 public class Bot extends TelegramLongPollingBot {
 
-	private static final String BOT_TOKEN = "5595912289:AAEZ8vLLBtdQPX2phjsdEhiup_H5l6Ar-h8";
-	private static final String BOT_NAME = "@dom_pp_bot";
-
 	public static void main(String[] args) {
-		System.out.println("Hello world!");
 		try {
 			TelegramBotsApi telegramBotsApi = new TelegramBotsApi(DefaultBotSession.class);
 			telegramBotsApi.registerBot(new Bot());
