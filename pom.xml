@@ -28,8 +28,6 @@
 	</dependencies>
 
 	<build>
-		<defaultGoal>package</defaultGoal>
-
 		<plugins>
 			<plugin>
 				<groupId>com.heroku.sdk</groupId>
