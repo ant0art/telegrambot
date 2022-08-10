@@ -2,44 +2,34 @@ package bot.dompp;
 
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 public class Bot extends TelegramLongPollingBot {
 
-	String userName;
-	String token;
-
-	public Bot(String string, String string2) {
-		this.userName = string;
-		this.token = string2;
-	}
-
     @Override
 	public void onUpdateReceived(Update update) {
 
-		Message incomMess = update.getMessage();
-		String incomMessChatId = incomMess.getChatId().toString();
-		String outMeString = incomMess.getText();
-		SendMessage outMess = new SendMessage();
+		if (update.hasMessage() && update.getMessage().hasText()) {
+			SendMessage message = new SendMessage(); // Create a SendMessage object with mandatory fields
+			message.setChatId(update.getMessage().getChatId().toString());
+			message.setText(update.getMessage().getText());
 
-		outMess.setChatId(incomMessChatId);
-		outMess.setText(outMeString);
-		try {
-			execute(outMess);
-		} catch (TelegramApiException e) {
-			e.printStackTrace();
+			try {
+				execute(message); // Call method to send the message
+			} catch (TelegramApiException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 
 	@Override
 	public String getBotUsername() {
-		return userName;
+		return "dom_pp_bot";
 	}
 
 	@Override
 	public String getBotToken() {
-		return token;
+		return "5595912289:AAEZ8vLLBtdQPX2phjsdEhiup_H5l6Ar-h8";
 	}
 }
