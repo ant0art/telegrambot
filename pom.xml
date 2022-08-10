@@ -16,7 +16,7 @@
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<maven.compiler.source>17</maven.compiler.source>
 		<maven.compiler.target>17</maven.compiler.target>
-		<telegrambots.version>5.5.0</telegrambots.version>
+		<telegrambots.version>6.1.0</telegrambots.version>
 	</properties>
 
 
@@ -26,6 +26,20 @@
 			<groupId>org.telegram</groupId>
 			<artifactId>telegrambots</artifactId>
 			<version>${telegrambots.version}</version>
+			<exclusions>
+				<exclusion>
+					<artifactId>jersey-media-json-jackson</artifactId>
+					<groupId>org.glassfish.jersey.media</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>jackson-module-jaxb-annotations</artifactId>
+					<groupId>com.fasterxml.jackson.module</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>jackson-jaxrs-json-provider</artifactId>
+					<groupId>com.fasterxml.jackson.jaxrs</groupId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 	</dependencies>
 
