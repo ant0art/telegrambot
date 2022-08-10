@@ -63,6 +63,15 @@
 				<groupId>com.heroku.sdk</groupId>
 				<artifactId>heroku-maven-plugin</artifactId>
 				<version>3.0.4</version>
+				<configuration>
+					<jdkVersion>1.7</jdkVersion>
+					<!-- Use your own application name >>> heroku enforces lowcase names -->
+					<appName>tgdomppbot</appName>
+					<processTypes>
+						<!-- Tell Heroku how to launch your application -->
+						<worker>java -Xmx300m -Xss512k -XX:CICompilerCount=2 -Dfile.encoding=UTF-8 -cp ./target/classes/:./target/dependency/ bot.dompp.App</worker>
+					</processTypes>
+				</configuration>
 			</plugin>
 
 			<plugin>
