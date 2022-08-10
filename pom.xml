@@ -65,20 +65,20 @@
 	<build>
 		<defaultGoal>package</defaultGoal>
 		<plugins>
-			<plugin>
+			<!-- <plugin>
 				<groupId>com.heroku.sdk</groupId>
 				<artifactId>heroku-maven-plugin</artifactId>
 				<version>3.0.4</version>
 				<configuration>
 					<jdkVersion>$[java.version]</jdkVersion>
-					<!-- Use your own application name >>> heroku enforces lowcase names -->
+					< Use your own application name >>> heroku enforces lowcase names >
 					<appName>tgdomppbot</appName>
 					<processTypes>
-						<!-- Tell Heroku how to launch your application -->
+						< Tell Heroku how to launch your application >
 						<worker>java -Xmx300m -Xss512k -XX:CICompilerCount=2 -Dfile.encoding=UTF-8 -cp ./target/classes/:./target/dependency/ bot.dompp.App</worker>
 					</processTypes>
 				</configuration>
-			</plugin>
+			</plugin> -->
 
 			<plugin>
 				<artifactId>maven-resources-plugin</artifactId>
@@ -95,8 +95,18 @@
 			</plugin>
 
 			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
-				<version>3.0.2</version>
+				<version>3.1.0</version>
+				<configuration>
+					<archive>
+						<manifest>
+							<addClasspath>false</addClasspath>
+							<!--classpathPrefix>lib/</classpathPrefix-->
+							<mainClass>bot.dompp.App</mainClass>
+						</manifest>
+					</archive>
+				</configuration>
 			</plugin>
 
 			<plugin>
@@ -133,21 +143,6 @@
 				  </descriptorRefs>
 				</configuration>
 			  </plugin>
-			<!--plugin>
-				<Build an executable JAR>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-jar-plugin</artifactId>
-				<version>3.1.0</version>
-				<configuration>
-					<archive>
-						<manifest>
-							<addClasspath>true</addClasspath>
-							<classpathPrefix>lib/</classpathPrefix>
-							<mainClass>bot.dompp.App</mainClass>
-						</manifest>
-					</archive>
-				</configuration>
-			</plugin -->
 		</plugins>
 
 		<pluginManagement>
