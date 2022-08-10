@@ -1,6 +1,5 @@
 *.log
 .vscode/
 env/
-dependencies.txt
 Properties.java
 BotCopy
