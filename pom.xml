@@ -6,6 +6,7 @@
 	<groupId>bot.dompp</groupId>
 	<artifactId>telegrambot</artifactId>
 	<version>1.0-SNAPSHOT</version>
+	<packaging>jar</packaging>
 
 	<name>telegrambot</name>
 	<url>http://www.artbunny.ru</url>
@@ -14,8 +15,8 @@
 		<java.version>17</java.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		<maven.compiler.source>17</maven.compiler.source>
-		<maven.compiler.target>17</maven.compiler.target>
+		<maven.compiler.source>${java.version}</maven.compiler.source>
+		<maven.compiler.target>${java.version}</maven.compiler.target>
 		<telegrambots.version>6.1.0</telegrambots.version>
 	</properties>
 
@@ -26,20 +27,6 @@
 			<groupId>org.telegram</groupId>
 			<artifactId>telegrambots</artifactId>
 			<version>${telegrambots.version}</version>
-			<exclusions>
-				<exclusion>
-					<artifactId>jersey-media-json-jackson</artifactId>
-					<groupId>org.glassfish.jersey.media</groupId>
-				</exclusion>
-				<exclusion>
-					<artifactId>jackson-module-jaxb-annotations</artifactId>
-					<groupId>com.fasterxml.jackson.module</groupId>
-				</exclusion>
-				<exclusion>
-					<artifactId>jackson-jaxrs-json-provider</artifactId>
-					<groupId>com.fasterxml.jackson.jaxrs</groupId>
-				</exclusion>
-			</exclusions>
 		</dependency>
 	</dependencies>
 
@@ -63,11 +50,11 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
-				<version>3.1.0</version>
+				<version>3.2.2</version>
 				<configuration>
 					<archive>
 						<manifest>
-							<addClasspath>false</addClasspath>
+							<addClasspath>true</addClasspath>
 							<!--classpathPrefix>lib/</classpathPrefix-->
 							<mainClass>bot.dompp.App</mainClass>
 						</manifest>
@@ -97,7 +84,9 @@
 			</plugin>
 
 			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-assembly-plugin</artifactId>
+				<version>3.4.2</version>
 				<configuration>
 				  <archive>
 					<manifest>
@@ -108,6 +97,15 @@
 					<descriptorRef>jar-with-dependencies</descriptorRef>
 				  </descriptorRefs>
 				</configuration>
+				<executions>
+					<execution>
+						<id>assemble-all</id>
+						<phase>package</phase>
+						<goals>
+							<goal>single</goal>
+						</goals>
+					</execution>
+				</executions>
 			  </plugin>
 		</plugins>
 
