@@ -54,7 +54,7 @@
 					<manifest>
 					  <addClasspath>true</addClasspath>
 					  <classpathPrefix>lib/</classpathPrefix>
-					  <mainClass>bot.dompp.Bot</mainClass>
+					  <mainClass>bot.dompp.App</mainClass>
 					</manifest>
 				  </archive>
 				</configuration>
