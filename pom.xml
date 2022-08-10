@@ -56,6 +56,7 @@
 	</dependencies>
 
 	<build>
+		<defaultGoal>install</defaultGoal>
 		<plugins>
 			<plugin>
 				<groupId>com.heroku.sdk</groupId>
@@ -67,7 +68,7 @@
 				<artifactId>maven-resources-plugin</artifactId>
 				<version>3.0.2</version>
 			</plugin>
-			
+
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>3.6.2</version>
@@ -82,8 +83,8 @@
 				<version>3.0.2</version>
 			</plugin>
 
-			<plugin>
-				<!-- Build an executable JAR -->
+			<!--plugin>
+				<Build an executable JAR>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
 				<version>3.1.0</version>
@@ -96,7 +97,7 @@
 						</manifest>
 					</archive>
 				</configuration>
-			</plugin>
+			</plugin -->
 		</plugins>
 
 		<pluginManagement>
