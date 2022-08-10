@@ -14,8 +14,8 @@
 		<java.version>17</java.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		<maven.compiler.source>1.8</maven.compiler.source>
-		<maven.compiler.target>1.8</maven.compiler.target>
+		<maven.compiler.source>17</maven.compiler.source>
+		<maven.compiler.target>17</maven.compiler.target>
 		<telegrambots.version>6.1.0</telegrambots.version>
 	</properties>
 
@@ -70,7 +70,7 @@
 				<artifactId>heroku-maven-plugin</artifactId>
 				<version>3.0.4</version>
 				<configuration>
-					<jdkVersion>1.7</jdkVersion>
+					<jdkVersion>17</jdkVersion>
 					<!-- Use your own application name >>> heroku enforces lowcase names -->
 					<appName>tgdomppbot</appName>
 					<processTypes>
@@ -157,8 +157,8 @@
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-compiler-plugin</artifactId>
 					<configuration>
-						<source>1.8</source>
-						<target>1.8</target>
+						<source>17</source>
+						<target>17</target>
 						<encoding>UTF-8</encoding>
 					</configuration>
 				</plugin>
