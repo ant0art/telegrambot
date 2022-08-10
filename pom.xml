@@ -76,7 +76,7 @@
 					<archive>
 						<manifest>
 							<addClasspath>true</addClasspath>
-							<classpathPrefix>${project.build.finalName}lib/</classpathPrefix>
+							<classpathPrefix>${project.build.finalName}.ib/</classpathPrefix>
 							<mainClass>${fully.qualified.main.class}</mainClass>
 						</manifest>
 					</archive>
@@ -140,7 +140,7 @@
 				<configuration>
 					<appName>tgdomppbot</appName>
 					<processTypes>
-						<worker>java -jar -cp target/classes:target/dependency/* ${project.bulid.finalName}-jar-with-dependencies.jar</worker>
+						<worker>java -jar -cp target/classes:target/dependency/* telegrambot-1.0-SNAPSHOT-jar-with-dependencies.jar</worker>
 					 </processTypes>
 				</configuration>
 			</plugin>
