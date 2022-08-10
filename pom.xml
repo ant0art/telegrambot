@@ -140,7 +140,7 @@
 				<configuration>
 					<appName>tgdomppbot</appName>
 					<processTypes>
-						<web>java -jar -cp target/classes:target/dependency/* telegrambot-1.0-SNAPSHOT-jar-with-dependencies.jar</web>
+						<worker>java -jar -cp target/classes:target/dependency/* telegrambot-1.0-SNAPSHOT-jar-with-dependencies.jar</worker>
 					 </processTypes>
 				</configuration>
 			</plugin>
