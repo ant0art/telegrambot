@@ -1,5 +1,7 @@
 *.log
+
 .vscode/
+.mvn/
+target/
+log/
 env/
-Properties.java
-BotCopy
