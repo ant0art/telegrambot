@@ -22,14 +22,12 @@ public final class Bot extends TelegramLongPollingBot {
 	public void onUpdateReceived(Update update) {
 
 		if (update.hasMessage() && update.getMessage().hasText()) {
-			// получаем сообщение для дальнейшей обработки
+			// получаем сообщение полшьзователя
 			Message inputMessage = update.getMessage();
 
-			SendMessage message = new SendMessage(); // Create a SendMessage object with mandatory
-														// fields
-
-
-			message.setChatId(inputMessage.getChatId().toString());
+			// формируем сообщение для ответа
+			SendMessage message = new SendMessage();
+			message.setChatId(inputMessage.getChatId());
 			message.setText(parseMessage(inputMessage));
 
 			try {
@@ -40,18 +38,26 @@ public final class Bot extends TelegramLongPollingBot {
 		}
 	}
 
+	// обработчик входящего сообщения
 	public String parseMessage(Message inputMessage) {
 		String userFirstName = inputMessage.getFrom().getFirstName();
 		String userLastName = inputMessage.getFrom().getLastName();
 		String userName = inputMessage.getFrom().getUserName();
-		String userFullName = userFirstName + " " + userLastName;
+		String userAnswerName = "";
+
+		// обработчик обращения к пользователю по имени
+		if (userName == null) {
+			if (userLastName == null) {
+				userAnswerName = userFirstName;
+			} else
+				userAnswerName = userFirstName + " " + userLastName;
+		} else
+			userAnswerName = userName;
 
 		String response = String.format(
 				"%s, не спеши уходить! Я обязательно научусь выдавать тебе больше информации!",
-				userName.isEmpty() ? userFullName : userName);
-		String userAnswerName = userName.isEmpty() ? userFullName : userName;
-
-		// обработчик команд
+				userAnswerName);
+		// обработчик команд бота
 		if (inputMessage.isCommand()) {
 			switch (inputMessage.getText()) {
 				case "/start":
@@ -63,7 +69,9 @@ public final class Bot extends TelegramLongPollingBot {
 					response = String.format("%s! Раздел помощи пока в разработке", userAnswerName);
 					break;
 				default:
-					response = String.format("%s! Эта команда мне пока неизвестна, выбери другую, пожалуйста", userAnswerName);
+					response = String.format(
+							"%s! Эта команда мне пока неизвестна, выбери другую, пожалуйста",
+							userAnswerName);
 			}
 		}
 		return response;
