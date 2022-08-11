@@ -28,22 +28,22 @@
 			<artifactId>telegrambots</artifactId>
 			<version>${telegrambots.version}</version>
 		</dependency>
-
-		<!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-assembly-plugin -->
-		<!-- <dependency>
-			<groupId>org.apache.maven.plugins</groupId>
-			<artifactId>maven-assembly-plugin</artifactId>
-			<version>3.4.2</version>
-		</dependency> -->
 	</dependencies>
 
 	<build>
 		<defaultGoal>package</defaultGoal>
 		<plugins>
 			<plugin>
-				<artifactId>maven-resources-plugin</artifactId>
-				<version>3.0.2</version>
-			</plugin>
+				<groupId>com.heroku.sdk</groupId>
+				<artifactId>heroku-maven-plugin</artifactId>
+				<version>3.0.3</version>
+				<configuration>
+					<appName>tgdomppbot</appName>
+					<processTypes>
+						<web>java $JAVA_OPTS -cp target/classes:target/dependency/* bot.dompp.App</web>
+					 </processTypes>
+				  </configuration>
+			  </plugin>
 
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -53,54 +53,6 @@
 					<target>${maven.compiler.target}</target>
 				</configuration>
 			</plugin>
-			<!-- <plugin>
-				<artifactId>maven-assembly-plugin</artifactId>
-				<configuration>
-					<archive>
-						<manifest>
-							<mainClass>bot.dompp.App</mainClass>
-						</manifest>
-					</archive>
-					<descriptorRefs>
-						<descriptorRef>jar-with-dependencies</descriptorRef>
-					</descriptorRefs>
-				</configuration>
-			</plugin> -->
-			<!-- plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-dependency-plugin</artifactId>
-				<version>3.3.0</version>
-				<executions>
-					<execution>
-						<id>copy-dependencies</id>
-						<phase>package</phase>
-						<goals>
-							<goal>copy-dependencies</goal>
-						</goals>
-						<configuration>
-							<outputDirectory>${project.build.directory}/${project.build.finalName}.lib</outputDirectory>
-							<overWriteReleases>false</overWriteReleases>
-							<overWriteSnapshots>false</overWriteSnapshots>
-							<overWriteIfNewer>true</overWriteIfNewer>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin-->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-jar-plugin</artifactId>
-				<version>3.1.0</version>
-				<configuration>
-					<archive>
-						<manifest>
-							<addClasspath>true</addClasspath>
-							<!--classpathPrefix>lib/</classpathPrefix-->
-							<mainClass>bot.dompp.App</mainClass>
-						</manifest>
-					</archive>
-				</configuration>
-			</plugin>
-
 		</plugins>
 	</build>
 </project>
