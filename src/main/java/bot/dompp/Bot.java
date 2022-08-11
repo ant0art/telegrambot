@@ -29,7 +29,7 @@ public final class Bot extends TelegramLongPollingBot {
 														// fields
 
 
-			message.setChatId(update.getMessage().getChatId().toString());
+			message.setChatId(inputMessage.getChatId().toString());
 			message.setText(parseMessage(inputMessage));
 
 			try {
