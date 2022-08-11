@@ -1,6 +1,7 @@
 *.log
 
 .vscode/
+.mvn/
 target/
 log/
 env/
