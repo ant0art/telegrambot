@@ -50,7 +50,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-dependency-plugin</artifactId>
-				<version>2.9</version>
+				<version>3.3.0</version>
 				<executions>
 					<execution>
 						<id>copy-dependencies</id>
@@ -58,92 +58,16 @@
 						<goals>
 							<goal>copy-dependencies</goal>
 						</goals>
-						<configuration>
+						<!--configuration>
 							<outputDirectory>${project.build.directory}/${project.build.finalName}.lib</outputDirectory>
 							<overWriteReleases>false</overWriteReleases>
 							<overWriteSnapshots>false</overWriteSnapshots>
 							<overWriteIfNewer>true</overWriteIfNewer>
-						</configuration>
+						</configuration-->
 					</execution>
 				</executions>
 			</plugin>
 
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-jar-plugin</artifactId>
-				<version>3.2.2</version>
-				<configuration>
-					<archive>
-						<manifest>
-							<addClasspath>true</addClasspath>
-							<classpathPrefix>${project.build.finalName}.ib/</classpathPrefix>
-							<mainClass>${fully.qualified.main.class}</mainClass>
-						</manifest>
-					</archive>
-				</configuration>
-			</plugin>
-
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-antrun-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>antrun-archive</id>
-						<phase>package</phase>
-						<goals>
-							<goal>run</goal>
-						</goals>
-						<configuration>
-							<target>
-								<property name="final.name" value="${project.build.directory}/${project.build.finalName}" />
-								<property name="archive.includes" value="${project.build.finalName}.${project.packaging} ${project.build.finalName}.lib/*" />
-								<property name="tar.destfile" value="${final.name}.tar" />
-								<zip basedir="${project.build.directory}" destfile="${final.name}.zip" includes="${archive.includes}" />
-								<tar basedir="${project.build.directory}" destfile="${tar.destfile}" includes="${archive.includes}" />
-								<gzip src="${tar.destfile}" destfile="${tar.destfile}.gz" />
-								<bzip2 src="${tar.destfile}" destfile="${tar.destfile}.bz2" />
-							</target>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-assembly-plugin</artifactId>
-				<version>3.4.2</version>
-				<configuration>
-					<archive>
-						<manifest>
-							<mainClass>${fully.qualified.main.class}</mainClass>
-						</manifest>
-					</archive>
-					<descriptorRefs>
-						<descriptorRef>jar-with-dependencies</descriptorRef>
-					</descriptorRefs>
-				</configuration>
-				<executions>
-					<execution>
-						<id>assemble-all</id>
-						<phase>package</phase>
-						<goals>
-							<goal>single</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-
-			<plugin>
-				<groupId>com.heroku.sdk</groupId>
-				<artifactId>heroku-maven-plugin</artifactId>
-				<version>3.0.3</version>
-				<configuration>
-					<appName>tgdomppbot</appName>
-					<processTypes>
-						<web>java -jar target/telegrambot-1.0-SNAPSHOT-jar-with-dependencies.jar</web>
-					 </processTypes>
-				</configuration>
-			</plugin>
 		</plugins>
 	</build>
 </project>
