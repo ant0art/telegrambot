@@ -22,7 +22,6 @@
 
 
 	<dependencies>
-		<!-- https://mvnrepository.com/artifact/org.telegram/telegrambots -->
 		<dependency>
 			<groupId>org.telegram</groupId>
 			<artifactId>telegrambots</artifactId>
@@ -31,9 +30,7 @@
 	</dependencies>
 
 	<build>
-		<!-- <defaultGoal>package</defaultGoal> -->
 		<plugins>
-
 			<plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -44,7 +41,6 @@
                     <release>${java.version}</release>
                 </configuration>
             </plugin>
-			
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>
@@ -59,27 +55,6 @@
                     </execution>
                 </executions>
             </plugin>
-
-			<!-- <plugin>
-				<groupId>com.heroku.sdk</groupId>
-				<artifactId>heroku-maven-plugin</artifactId>
-				<version>3.0.3</version>
-				<configuration>
-					<appName>tgdomppbot</appName>
-					<processTypes>
-						<web>java $JAVA_OPTS -cp target/classes:target/dependency/* bot.dompp.App</web>
-					</processTypes>
-				</configuration>
-			</plugin>
-
-			<plugin>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.6.2</version>
-				<configuration>
-					<source>${maven.compiler.source}</source>
-					<target>${maven.compiler.target}</target>
-				</configuration>
-			</plugin> -->
 		</plugins>
 	</build>
 </project>
