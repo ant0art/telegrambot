@@ -4,22 +4,15 @@ import java.io.IOException;
 import java.io.Reader;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.sql.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.glassfish.jersey.internal.util.collection.DataStructures;
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -27,13 +20,9 @@ import com.google.gson.JsonNull;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonPrimitive;
-import com.google.gson.stream.JsonReader;
 import bot.dompp.storage.HomeData.HomeDataObj.Shedule;
-import bot.dompp.storage.HomeData.HomeDataObj.Shedule.DayOfWork;
 
 public class HomeData extends BotLibrary {
-    private List<HomeDataObj> homeDataObjsList;
-    private Map<String, HomeDataObj> homeDataMap;
     private static Logger logger = LoggerFactory.getLogger(HomeData.class);
 
     private static String path = MyPath.DATA.getPath();
@@ -54,10 +43,10 @@ public class HomeData extends BotLibrary {
         }
 
         public class Shedule {
-            static List<DayOfWork> daysOfWork;
+            List<DayOfWork> daysOfWork;
 
             public Shedule() {
-                this.daysOfWork = null;
+                this.daysOfWork = new ArrayList<>();
             }
 
             public class DayOfWork {
@@ -131,19 +120,9 @@ public class HomeData extends BotLibrary {
                     Gson gson = new Gson();
                     String json = gson.toJson(jsonElement);
                     DayOfWork[] temp = gson.fromJson(json, DayOfWork[].class);
-                    // JsonArray parser = jsonElement.getAsJsonArray();
                     logger.info("Make an jArray from jElement");
                     daysOfWork = Arrays.asList(temp);
                     logger.info(String.format("daysOfWork is this - %s", daysOfWork));
-
-                    // for (Map.Entry<String, JsonElement> simpleObj : parser.entrySet()) {
-                    // Gson gson = new Gson();
-                    // String json = gson.toJson(simpleObj.getValue());
-                    // // создаем java-объект из базы json
-                    // dayOfWorks.add(gson.fromJson(json, DayOfWork.class));
-                    // logger.info("new Object added to List");
-
-                    // }
                 } catch (NullPointerException ex) {
                     ex.printStackTrace();
                 }
@@ -152,7 +131,7 @@ public class HomeData extends BotLibrary {
             }
 
             public static String makeString(JsonElement jsonElement) {
-                logger.info(String.format("Start command MAKESTRING"));
+                logger.info("Start command MAKESTRING");
 
                 List<DayOfWork> dayOfWorks = getDaysOfWork(jsonElement);
                 Map<String, String> example = new LinkedHashMap<>();
@@ -166,10 +145,7 @@ public class HomeData extends BotLibrary {
                         example.put(dayOfWork.day, dayOfWork.start + "-" + dayOfWork.end);
                     }
                 }
-                Map<String, String> entry = new LinkedHashMap<String, String>();
-
-                // ПН ВТ
-                // 08:00-20:00 08:00-20:00
+                Map<String, String> entry = new LinkedHashMap<>();
 
                 int count1 = 0; // этот счётчик отвечает за необходимость дефиса
                 int count2 = 0; // этот отвечает за запятую
@@ -179,8 +155,6 @@ public class HomeData extends BotLibrary {
                             pair.getKey(), pair.getValue()));
                     if (pair.getKey() != null) {
                         if (entry.containsKey(pair.getValue())) {
-                            // count1++;
-                            // count2++;
                             logger.info(String.format("Счётчик count = %d", count1));
                             if (count1 >= 1) {
                                 String tm = entry.get(pair.getValue());
@@ -317,29 +291,27 @@ public class HomeData extends BotLibrary {
     }
 
     public static String matchAnswer(HomeDataObj homeDataObj) {
-        // logger.info("START MAKING ANSWER FROM TEMPLATE");
         String templateAnswer = "";
         StringBuilder sBuilder = new StringBuilder("*").append(homeDataObj.getTitle()).append("*\n");
-        // logger.info("Object not null");
         // получаем все объекты data, которые могут быть использованы в шаблоне сообщения
         JsonObject dataObj = homeDataObj.getData();
         try {
             // перебираем все пары объекта data
-            // logger.info("Start checking elements of data");
+            logger.info("Start checking elements of data");
             // получаем все значения из шаблона ответа на сообщение пользвателю
             for (int i = 0; i < homeDataObj.getTpl().length; i++) {
-                // logger.info("Start checking elements of template");
+                logger.info("Start checking elements of template");
 
                 String s = homeDataObj.getTpl()[i];
-                // logger.info(String.format("%d element of template is - %s ", i, s));
+                logger.info(String.format("%d element of template is - %s ", i, s));
                 String tmp = "";
                 String regexStr = ".*\\{\\{.+?}}[\\s\\S\\n]*";
                 // если в строке шаблона найдено совпадение, то работаем дальше с этой
                 // строкой совпадения
-                // logger.info(String.format("Regex is - %s %nIs there any match? - %s",
-                // regexStr, Pattern.matches(regexStr, s)));
+                logger.info(String.format("Regex is - %s %nIs there any match? - %s",
+                regexStr, Pattern.matches(regexStr, s)));
                 if (Pattern.matches(regexStr, s)) {
-                    // logger.info("Match found, go next");
+                    logger.info("Match found, go next");
                     regexStr = "\\{\\{.+?}}";
                     Pattern p = Pattern.compile(regexStr, Pattern.CASE_INSENSITIVE);
                     Matcher m = p.matcher(s);
@@ -348,74 +320,59 @@ public class HomeData extends BotLibrary {
                         // сравнить с ключами data
                         tmp = s.substring(m.start() + 2, m.end() - 2);
 
-                        // logger.info(String.format(
-                        // "Temp string for checking with key-strings of data: %s",
-                        // tmp));
+                        logger.info(String.format(
+                        "Temp string for checking with key-strings of data: %s",
+                        tmp));
 
                         for (Map.Entry<String, JsonElement> dEntry2 : dataObj.entrySet()) {
-                            // logger.info("Start checking data-map secondly");
+                            logger.info("Start checking data-map secondly");
 
                             JsonElement sElement = dEntry2.getValue();
-                            // logger.info(String.format("sElement is: %s", sElement));
+                            logger.info(String.format("sElement is: %s", sElement));
 
                             // если в шаблоне regex выражение совпадет с ключем data, едем
                             // дальше
                             if (tmp.equals(dEntry2.getKey())) {
-                                // logger.info("Show this log if true");
+                                logger.info("Show this log if true");
 
                                 // тут мы понимаем, есть ли совпадение. А значит пришло
                                 // время
-                                // определить тип объекта переда нами
+                                // определить тип объекта перед нами
                                 // JsonArray: lonlat, phones, shedule
                                 logger.info(String.format("sElement is JsonElement? %s",
                                         sElement.isJsonObject()));
                                 logger.info("WE WERE HERE!");
-                                String stringForReturn = "";
                                 switch (tmp) {
                                     case "lonlat": {
-                                        // logger.info(String.format(
-                                        // "Array of Long with logitude & latitude: %s, shown class
-                                        // - %s",
-                                        // sElement, sElement.getClass()));
-                                        logger.info("lonlat");
-                                        // stringForReturn = sElement.toString();
+                                        logger.info(String.format("Array of Long with logitude & latitude: %s, shown class- %s",sElement, sElement.getClass()));
 
                                         sBuilder.append(s.replace(s.substring(m.start(), m.end()),
                                                         sElement.toString()));
                                         break;
                                     }
                                     case "phones": {
-                                        // logger.info(String.format(
-                                        // "Array of phones: %s, shown class - %s",
-                                        // sElement, sElement.getClass()));
-                                        logger.info("phones");
-                                        // stringForReturn = sElement.toString();
+                                        logger.info(String.format(
+                                        "Array of phones: %s, shown class - %s",
+                                        sElement, sElement.getClass()));
                                         sBuilder.append(s.replace(s.substring(m.start(), m.end()),
                                                         sElement.toString()));
-                                        // sBuilder.append(stringForReturn + "\n");
                                         break;
                                     }
                                     case "schedule": {
-                                        // logger.info(String.format(
-                                        // "Array of shedule: %s, shown class - %s",
-                                        // sElement, sElement.getClass()));
-                                        logger.info("schedule");
+                                        logger.info(String.format(
+                                        "Array of shedule: %s, shown class - %s",
+                                        sElement, sElement.getClass()));
                                         logger.info(String.format("schedule is %s",
                                                 Shedule.makeString(sElement)));
-                                        // stringForReturn = sElement.toString();
                                         sBuilder.append(s.replace(s.substring(m.start(), m.end()),
                                                         Shedule.makeString(sElement)));
                                         break;
                                     }
                                     default: {
-                                        // logger.info(
-                                        // "Another array, witch is not belong to Object template");
                                         sBuilder.append(s.replace(s.substring(m.start(), m.end()),
                                                 sElement.toString()));
                                     }
                                 }
-                                // logger.info(String.format("S.Builder now is that: %s",
-                                // sBuilder.toString()));
                                 templateAnswer = sBuilder.toString();
                             }
                         }
@@ -430,7 +387,8 @@ public class HomeData extends BotLibrary {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-        templateAnswer = templateAnswer.replaceAll("\"", "");
+        templateAnswer = Pattern.compile("\"").matcher(templateAnswer).replaceAll("");
+        
 
         String regexStr = "([-.+?^$(){}])";
         StringBuffer buffer = new StringBuffer();
@@ -473,7 +431,6 @@ public class HomeData extends BotLibrary {
 
     public HomeData() {
         super();
-        this.homeDataMap = new LinkedHashMap<>();
     }
 
     public static JsonElement getParser() {

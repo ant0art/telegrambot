@@ -1,10 +1,5 @@
 package bot.dompp;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.telegram.telegrambots.extensions.bots.commandbot.TelegramLongPollingCommandBot;
@@ -12,15 +7,11 @@ import org.telegram.telegrambots.extensions.bots.commandbot.commands.IBotCommand
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage.SendMessageBuilder;
 import org.telegram.telegrambots.meta.api.objects.Message;
-import org.telegram.telegrambots.meta.api.objects.MessageEntity;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
-import com.google.gson.JsonArray;
 import bot.dompp.commands.BotCommandsConfig;
 import bot.dompp.commands.service.*;
 import bot.dompp.storage.HomeData;
-import bot.dompp.storage.MyJsonParser;
-import bot.dompp.storage.MyPath;
 import bot.dompp.storage.HomeData.HomeDataObj;
 
 public final class Bot extends TelegramLongPollingCommandBot {
@@ -71,8 +62,6 @@ public final class Bot extends TelegramLongPollingCommandBot {
 		logger.info(String.format("Have any matches? - %s", newObj == null));
 		if(newObj != null) {
 			response = HomeData.matchAnswer(newObj);
-
-			// logger.info(temp.toString());
 		}
 		return response;
 	}
