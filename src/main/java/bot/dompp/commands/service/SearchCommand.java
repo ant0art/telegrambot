@@ -1,6 +1,5 @@
 package bot.dompp.commands.service;
 
-import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -60,7 +59,7 @@ public class SearchCommand extends ServiceCommand {
 		response.append("Чтобы узнать о доступных командах, жмите /help");
 		logger.debug("Injection of keys of json ends");
 		String templateAnswer = response.toString();
-		templateAnswer.replaceAll("\"", "");
+		Pattern.compile("\"").matcher(templateAnswer).replaceAll("");
 
         String regexStr = "([-.+?^$(){}])";
         StringBuffer buffer = new StringBuffer();
