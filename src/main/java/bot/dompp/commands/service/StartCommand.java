@@ -24,16 +24,18 @@ public class StartCommand extends ServiceCommand {
 		String userName = Utils.getUserName(user);
 
 		StringBuilder response = new StringBuilder(String.format(
-				"Приветствую тебя, @%s! Я - бот сообщества ЖК\"Полюстрово Парк\".%nЯ нахожусь в процессе обучения.%n%n",
+				"Приветствую тебя, @%s\\!%nЯ \\- бот сообщества [ЖК\"Полюстрово Парк\"](https://t.me/joinchat/D0gm5A0nY3WtypCH-L3Ziw)\\.%nЯ нахожусь в процессе обучения\\.%n%n",
 				userName)).append("Вот список доступных мне команд\n");
 		for (IBotCommand cmd : HelpCommand.getmCommandRegistry().getRegisteredCommands()) {
-			if(cmd instanceof StartCommand) continue;
+			if (cmd instanceof StartCommand)
+				continue;
 			response.append(cmd.toString());
 		}
 
 		logger.debug(String.format("User: %s. Command starts: %s", userName,
 				this.getCommandIdentifier()));
-		sendAnswer(absSender, chat.getId(), this.getCommandIdentifier(), userName, response.toString());
+		sendAnswer(absSender, chat.getId(), this.getCommandIdentifier(), userName,
+				response.toString());
 		logger.debug(
 				String.format("User %s. Command ends %s", userName, this.getCommandIdentifier()));
 	}

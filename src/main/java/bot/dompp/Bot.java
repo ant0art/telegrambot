@@ -1,6 +1,10 @@
 package bot.dompp;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.telegram.telegrambots.extensions.bots.commandbot.TelegramLongPollingCommandBot;
@@ -11,14 +15,21 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.MessageEntity;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
+import com.google.gson.JsonArray;
 import bot.dompp.commands.BotCommandsConfig;
 import bot.dompp.commands.service.*;
+import bot.dompp.storage.HomeData;
+import bot.dompp.storage.MyJsonParser;
+import bot.dompp.storage.MyPath;
+import bot.dompp.storage.HomeData.HomeDataObj;
 
 public final class Bot extends TelegramLongPollingCommandBot {
 	private Logger logger = LoggerFactory.getLogger(Bot.class);
 
 	private final String BOT_NAME;
 	private final String BOT_TOKEN;
+
+
 
 	public Bot(String botName, String botToken) {
 		super();
@@ -27,28 +38,41 @@ public final class Bot extends TelegramLongPollingCommandBot {
 		logger.debug("Name & Token are set");
 
 		/*
-		 * Список доступных команд. Не содержит scope
+		 * Список доступных команд. Не содержит scope. Выводится
 		 */
-		register(new StartCommand("start", "Начнем с начала. Сервисная команда")); // service
-																					// command
-		register(new SearchCommand("search", "Список ключевых слов")); // service command
-		register(new HelpCommand(this)); // service command
-
+		register(new StartCommand("start", "Стартовая команда"));
+		register(new SearchCommand("search", "Список ключевых слов"));
+		register(new HelpCommand(this));
 	}
 
 	// обработчик входящего сообщения
 	public String parseMessage(Message inputMessage) {
 		String userName = Utils.getUserName(inputMessage);
+
+		logger.info("FIRST VAR FOR RESPONSE");
+		// Ответ, поступающий в любом случае, если не будет перезаписан
 		String response = String.format(
-				"%s, не спеши уходить! Я обязательно научусь выдавать больше информации!",
+				"@%s, очень неразборчиво написано\\! Я обязательно научусь выдавать больше информации\\! Но сперва всё же ознакомься со списком известных команд здесь /help",
 				userName);
+
+		// ответ на попытку пользователя использовать команду, которой нет
 		if (inputMessage.isCommand()) {
 			for (IBotCommand cmd : HelpCommand.getmCommandRegistry().getRegisteredCommands()) {
 				if (!inputMessage.getText().equals(cmd.getCommandIdentifier()))
 					response = String.format(
-							"%s, Я подобной команды не знаю. Попробуй найти подходящую здесь /help",
+							"@%s, я подобной команды не знаю\\. Попробуй найти подходящую здесь /help",
 							userName);
 			}
+		}
+
+		logger.info("TRY TO COMPARE");
+
+		HomeDataObj newObj = HomeData.hasMatch(inputMessage.getText());
+		logger.info(String.format("Have any matches? - %s", newObj == null));
+		if(newObj != null) {
+			response = HomeData.matchAnswer(newObj);
+
+			// logger.info(temp.toString());
 		}
 		return response;
 	}
@@ -63,35 +87,30 @@ public final class Bot extends TelegramLongPollingCommandBot {
 		return BOT_TOKEN;
 	}
 
+	/*
+	 * Метод обработки всех сообщений от пользователя, которые не являются командой
+	 */
 	@Override
 	public void processNonCommandUpdate(Update update) {
-
-		// получаем сообщение полшьзователя
 		Message inMess = update.getMessage();
 		Long chatId = inMess.getChatId();
 		String response = parseMessage(inMess);
-
-		// проверяем входящие сущности
-		logger.warn("Here it is the log of all entities");
-		List<MessageEntity> entities = inMess.getEntities();
-		try {
-			entities.forEach(messageEntity -> logger.info(messageEntity.toString()));
-		} catch (NullPointerException e) {
-			logger.info(
-					String.format("This text is poor for any entity. Text: %s", inMess.getText()));
-		}
 		setAnswer(chatId, Utils.getUserName(inMess), response);
 	}
 
+	/*
+	 * Метод обработки ответа пользователю, на сообщение без команды
+	 */
 	private void setAnswer(Long chatId, String userName, String text) {
-		// формируем сообщение для ответа
 		SendMessage message = new SendMessage();
-		SendMessageBuilder messageBuilder = SendMessage.builder();
-		SendMessage first =
-				messageBuilder.text("Вау! Что-то новенькое!").chatId(chatId.toString()).build();
-		message.enableMarkdown(true);
+		SendMessageBuilder messageBuilder = SendMessage.builder().text("Вау! Что-то новенькое!");
+		SendMessage first = messageBuilder.chatId(chatId.toString()).build();
+		message.enableMarkdownV2(true);
 		message.setChatId(chatId.toString());
 		message.setText(text);
+
+		//форматирование шаблона по наличию совпадения
+
 
 		try {
 			execute(new BotCommandsConfig().setBotCommands());

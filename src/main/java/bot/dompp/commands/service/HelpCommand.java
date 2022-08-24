@@ -18,7 +18,7 @@ public final class HelpCommand extends ServiceCommand {
 	 * @param description - what command do
 	 */
 	public HelpCommand(ICommandRegistry commandRegistry) {
-		super("help", "Список доступных команд");
+		super("help", "Руководство пользователя");
 		mCommandRegistry = commandRegistry;
 	}
 
@@ -34,7 +34,7 @@ public final class HelpCommand extends ServiceCommand {
 		String userName = Utils.getUserName(user);
 
 		StringBuilder helpMessageBuilder =
-				new StringBuilder("Список доступных команд:").append("\n");
+				new StringBuilder("*Список доступных команд:*").append("\n");
 		for (IBotCommand cmd : mCommandRegistry.getRegisteredCommands()) {
 			if(cmd instanceof StartCommand) continue;
 			helpMessageBuilder.append(cmd.toString());

@@ -1,7 +1,12 @@
 *.log
+*.properties
+*.editorconfig
+
 
 .vscode/
 .mvn/
 target/
 log/
 env/
+storage/.json
+MyPath.java

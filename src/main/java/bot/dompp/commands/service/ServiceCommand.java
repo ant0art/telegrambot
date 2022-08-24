@@ -19,7 +19,7 @@ public abstract class ServiceCommand extends BotCommand {
 	@Override
 	public String toString() {
 
-		return "/" + this.getCommandIdentifier() + " - " + this.getDescription() + "\n";
+		return "/" + this.getCommandIdentifier() + " \\- _" + this.getDescription().toLowerCase() + "_\n";
 	}
 
 	/**
@@ -30,7 +30,7 @@ public abstract class ServiceCommand extends BotCommand {
 		SendMessage message = new SendMessage();
 
 		// включаем поддержку режима разметки
-		message.enableMarkdown(true);
+		message.enableMarkdownV2(true);
 		message.setChatId(chatId.toString());
 		message.setText(text);
 		try {
