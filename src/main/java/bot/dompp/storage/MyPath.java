@@ -1,7 +1,8 @@
 package bot.dompp.storage;
 
 public enum MyPath {
-    DATA("\\storage\\data.json");
+    // DATA("src\\main\\java\\bot\\dompp\\storage\\data.json");
+    DATA("src/main/java/bot/dompp/storage/data.json");
 
     private String path;
 
