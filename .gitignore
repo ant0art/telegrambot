@@ -2,7 +2,6 @@
 *.properties
 *.editorconfig
 
-
 .vscode/
 .mvn/
 target/
