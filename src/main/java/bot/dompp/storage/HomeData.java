@@ -7,8 +7,10 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.slf4j.Logger;
@@ -53,6 +55,7 @@ public class HomeData extends BotLibrary {
                 private String day;
                 private String start;
                 private String end;
+                private String workbreak;
 
 
                 /**
@@ -107,6 +110,23 @@ public class HomeData extends BotLibrary {
                     this.day = null;
                     this.start = null;
                     this.end = null;
+                    this.workbreak = null;
+                }
+
+
+                /**
+                 * @return the workBreak
+                 */
+                public String getWorkBreak() {
+                    return workbreak;
+                }
+
+
+                /**
+                 * @param workBreak the workBreak to set
+                 */
+                public void setWorkBreak(String workBreak) {
+                    this.workbreak = workbreak;
                 }
             }
 
@@ -134,56 +154,79 @@ public class HomeData extends BotLibrary {
                 logger.info("Start command MAKESTRING");
 
                 List<DayOfWork> dayOfWorks = getDaysOfWork(jsonElement);
-                Map<String, String> example = new LinkedHashMap<>();
+                // Первый способ формирования расписания:
+                // 1. Собираем в одну карту все объекты
+                // Map<String, String> example = new LinkedHashMap<>();
+                Map<String, String> result = new LinkedHashMap<>();
+                List<String> workTime = new ArrayList<>();
+                List<String> dayList = new ArrayList<>();
+
                 for (DayOfWork dayOfWork : dayOfWorks) {
                     logger.info(String.format(
                             "This object consists of: day-\"%s\", start - \"%s\", end - \"%s\"",
                             dayOfWork.day, dayOfWork.start, dayOfWork.end));
-                    if (dayOfWork.start == null) {
-                        example.put(dayOfWork.day, "выходной");
-                    } else {
-                        example.put(dayOfWork.day, dayOfWork.start + "-" + dayOfWork.end);
-                    }
-                }
-                Map<String, String> entry = new LinkedHashMap<>();
-
-                int count1 = 0; // этот счётчик отвечает за необходимость дефиса
-                int count2 = 0; // этот отвечает за запятую
-                // перебираем карту примера
-                for (Map.Entry<String, String> pair : example.entrySet()) {
-                    logger.info(String.format("Start checking from pair KEY = %s pair VALUE = %s",
-                            pair.getKey(), pair.getValue()));
-                    if (pair.getKey() != null) {
-                        if (entry.containsKey(pair.getValue())) {
-                            logger.info(String.format("Счётчик count = %d", count1));
-                            if (count1 >= 1) {
-                                String tm = entry.get(pair.getValue());
-                                logger.info(String.format("String final var  %s by key %s", tm,
-                                        pair.getValue()));
-                                tm = tm.substring(0, tm.length() - 2);
-                                entry.put(pair.getValue(), tm += pair.getKey());
-                                count1++;
+                            if(dayOfWork.getStart() == null) {
+                                workTime.add("выходной");
                             } else {
-                                String tm = entry.get(pair.getValue());
-                                logger.info(String.format("String final var  %s by key %s", tm,
-                                        pair.getValue()));
-                                entry.put(pair.getValue(), tm += "-" + pair.getKey());
-                                count1++;
+                                if(dayOfWork.getWorkBreak() != null) {
+                                    workTime.add(dayOfWork.getStart() + "-" + dayOfWork.getEnd() + " обед: " + dayOfWork.getWorkBreak());
+                                } else {
+                                    workTime.add(dayOfWork.getStart() + "-" + dayOfWork.getEnd());
+                                }
+                            }
+                    dayList.add(dayOfWork.getDay());
+                    // example.put(dayOfWork.start + "-" + dayOfWork.end, dayOfWork.day);
+                }
+                Set<String> workTimeSet = new LinkedHashSet<>(workTime);
+                for (String s : workTimeSet) {
+                    logger.info(String.format("testing string - %s", s));
+                    // берем первое время
+                    // for(int i = 0; i < workTime.size(); i++) {
+                    // 08 - 20
+                    int temp = -1;
+                    int count = 0;
+                    for (int j = 0; j < workTime.size(); j++) {
+                        if (workTime.get(j).equals(s)) {
+                            count++;
+                            if (temp == -1) {
+                                temp = j;
+                                result.put(s, dayList.get(j));
+                            logger.info(String.format("Add to Map reult pair: key - %s, value - %s", s, dayList.get(j)));
+
+                            } // можно записать в результат первый вариант
+                            if (j > temp + 1 && count == 1) { // можно поставить запятую
+                                String tempString = result.get(s);
+                                result.put(s, tempString + ", " + dayList.get(j));
+                                temp = j;
+                            logger.info(String.format("Add to Map reult pair: key - %s, value - %s", s, dayList.get(j)));
+
+                            } else if (j == temp + 1 && count == 2) {// можно поставить дефис
+                                String tempString = result.get(s);
+                                result.put(s, tempString + "-" + dayList.get(j));
+                                temp = j;
+                            logger.info(String.format("Add to Map reult pair: key - %s, value - %s", s, dayList.get(j)));
+
+                            } else if (j >= temp + 1 && count > 2) {// можно поставить дефис и
+                                                                   // заменить последние две буквы
+                                                                   // строки
+                                String tempString = result.get(s);
+                                String currenString = dayList.get(j);
+                                String changeString =
+                                        tempString.substring(0, tempString.length() - 2);
+                                result.put(s, changeString + currenString);
+                                temp = j;
+                                logger.info(String.format("Add to Map reult pair: key - %s, value - %s", s, changeString + currenString));
                             }
                         } else {
-                            count2++;
-                            entry.put(pair.getValue(), pair.getKey());
-                            if (count2 > 0) {
-                                count1 = 0;
-                            }
+                            count = 0;
                         }
                     }
                 }
                 StringBuilder sBuilder = new StringBuilder("\n");
-                for (Map.Entry<String, String> pair : entry.entrySet()) {
-                    sBuilder.append(pair.getValue()).append(":").append(pair.getKey()).append("\n");
+                for(Map.Entry<String, String> pair : result.entrySet()) {
+                    sBuilder.append(pair.getValue()).append(": ").append(pair.getKey()).append("\n");
+                    logger.info(sBuilder.toString());
                 }
-
                 return sBuilder.toString();
             }
 
@@ -292,7 +335,8 @@ public class HomeData extends BotLibrary {
 
     public static String matchAnswer(HomeDataObj homeDataObj) {
         String templateAnswer = "";
-        StringBuilder sBuilder = new StringBuilder("*").append(homeDataObj.getTitle()).append("*\n");
+        StringBuilder sBuilder =
+                new StringBuilder("*").append(homeDataObj.getTitle()).append("*\n");
         // получаем все объекты data, которые могут быть использованы в шаблоне сообщения
         JsonObject dataObj = homeDataObj.getData();
         try {
@@ -308,8 +352,8 @@ public class HomeData extends BotLibrary {
                 String regexStr = ".*\\{\\{.+?}}[\\s\\S\\n]*";
                 // если в строке шаблона найдено совпадение, то работаем дальше с этой
                 // строкой совпадения
-                logger.info(String.format("Regex is - %s %nIs there any match? - %s",
-                regexStr, Pattern.matches(regexStr, s)));
+                logger.info(String.format("Regex is - %s %nIs there any match? - %s", regexStr,
+                        Pattern.matches(regexStr, s)));
                 if (Pattern.matches(regexStr, s)) {
                     logger.info("Match found, go next");
                     regexStr = "\\{\\{.+?}}";
@@ -321,8 +365,7 @@ public class HomeData extends BotLibrary {
                         tmp = s.substring(m.start() + 2, m.end() - 2);
 
                         logger.info(String.format(
-                        "Temp string for checking with key-strings of data: %s",
-                        tmp));
+                                "Temp string for checking with key-strings of data: %s", tmp));
 
                         for (Map.Entry<String, JsonElement> dEntry2 : dataObj.entrySet()) {
                             logger.info("Start checking data-map secondly");
@@ -344,28 +387,30 @@ public class HomeData extends BotLibrary {
                                 logger.info("WE WERE HERE!");
                                 switch (tmp) {
                                     case "lonlat": {
-                                        logger.info(String.format("Array of Long with logitude & latitude: %s, shown class- %s",sElement, sElement.getClass()));
+                                        logger.info(String.format(
+                                                "Array of Long with logitude & latitude: %s, shown class- %s",
+                                                sElement, sElement.getClass()));
 
                                         sBuilder.append(s.replace(s.substring(m.start(), m.end()),
-                                                        sElement.toString()));
+                                                sElement.toString()));
                                         break;
                                     }
                                     case "phones": {
                                         logger.info(String.format(
-                                        "Array of phones: %s, shown class - %s",
-                                        sElement, sElement.getClass()));
+                                                "Array of phones: %s, shown class - %s", sElement,
+                                                sElement.getClass()));
                                         sBuilder.append(s.replace(s.substring(m.start(), m.end()),
-                                                        sElement.toString()));
+                                                sElement.toString()));
                                         break;
                                     }
                                     case "schedule": {
                                         logger.info(String.format(
-                                        "Array of shedule: %s, shown class - %s",
-                                        sElement, sElement.getClass()));
+                                                "Array of shedule: %s, shown class - %s", sElement,
+                                                sElement.getClass()));
                                         logger.info(String.format("schedule is %s",
                                                 Shedule.makeString(sElement)));
                                         sBuilder.append(s.replace(s.substring(m.start(), m.end()),
-                                                        Shedule.makeString(sElement)));
+                                                Shedule.makeString(sElement)));
                                         break;
                                     }
                                     default: {
@@ -388,7 +433,7 @@ public class HomeData extends BotLibrary {
             ex.printStackTrace();
         }
         templateAnswer = Pattern.compile("\"").matcher(templateAnswer).replaceAll("");
-        
+
 
         String regexStr = "([-.+?^$(){}])";
         StringBuffer buffer = new StringBuffer();
