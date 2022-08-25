@@ -22,37 +22,44 @@
 				{
 					"day": "Пн",
 					"start": "08:00",
-					"end": "20:00"
+					"end": "20:00",
+					"workbreak": null
 				},
 				{
 					"day": "Вт",
 					"start": "08:00",
-					"end": "20:00"
+					"end": "20:00",
+					"workbreak": null
 				},
 				{
 					"day": "Ср",
 					"start": "08:00",
-					"end": "20:00"
+					"end": "20:00",
+					"workbreak": null
 				},
 				{
 					"day": "Чт",
 					"start": "08:00",
-					"end": "20:00"
+					"end": "20:00",
+					"workbreak": null
 				},
 				{
 					"day": "Пт",
 					"start": "08:00",
-					"end": "20:00"
+					"end": "20:00",
+					"workbreak": null
 				},
 				{
 					"day": "Сб",
 					"start": "09:00",
-					"end": "15:00"
+					"end": "15:00",
+					"workbreak": null
 				},
 				{
 					"day": "Вс",
 					"start": null,
-					"end": null
+					"end": null,
+					"workbreak": null
 				}
 			],
 			"photo": null
@@ -88,37 +95,44 @@
 				{
 					"day": "Пн",
 					"start": "17:00",
-					"end": "22:00"
+					"end": "22:00",
+					"workbreak": null
 				},
 				{
 					"day": "Вт",
 					"start": "17:00",
-					"end": "22:00"
+					"end": "22:00",
+					"workbreak": null
 				},
 				{
 					"day": "Ср",
 					"start": "17:00",
-					"end": "22:00"
+					"end": "22:00",
+					"workbreak": null
 				},
 				{
 					"day": "Чт",
 					"start": "17:00",
-					"end": "22:00"
+					"end": "22:00",
+					"workbreak": null
 				},
 				{
 					"day": "Пт",
 					"start": "17:00",
-					"end": "22:00"
+					"end": "22:00",
+					"workbreak": null
 				},
 				{
 					"day": "Сб",
 					"start": "12:00",
-					"end": "22:00"
+					"end": "22:00",
+					"workbreak": null
 				},
 				{
 					"day": "Вс",
 					"start": "10:00",
-					"end": "22:00"
+					"end": "22:00",
+					"workbreak": null
 				}
 			],
 			"tg": "https://t.me/polustrovoparksport",
@@ -158,37 +172,44 @@
 				{
 					"day": "Пн",
 					"start": "08:00",
-					"end": "21:00"
+					"end": "21:00",
+					"workbreak": null
 				},
 				{
 					"day": "Вт",
 					"start": "08:00",
-					"end": "21:00"
+					"end": "21:00",
+					"workbreak": null
 				},
 				{
 					"day": "Ср",
 					"start": "08:00",
-					"end": "21:00"
+					"end": "21:00",
+					"workbreak": null
 				},
 				{
 					"day": "Чт",
 					"start": "08:00",
-					"end": "21:00"
+					"end": "21:00",
+					"workbreak": null
 				},
 				{
 					"day": "Пт",
 					"start": "08:00",
-					"end": "21:00"
+					"end": "21:00",
+					"workbreak": null
 				},
 				{
 					"day": "Сб",
 					"start": "10:00",
-					"end": "18:00"
+					"end": "18:00",
+					"workbreak": null
 				},
 				{
 					"day": "Вс",
 					"start": null,
-					"end": null
+					"end": null,
+					"workbreak": null
 				}
 			],
 			"photo": null,
@@ -246,43 +267,50 @@
 			"schedule": [
 				{
 					"day": "Пн",
-					"start": "10:00-13:00",
-					"end": "14:00–17:00"
+					"start": "10:00",
+					"end": "17:00",
+					"workbreak": "13:00-14:00"
 				},
 				{
 					"day": "Вт",
 					"start": null,
-					"end": null
+					"end": null,
+					"workbreak": null
 				},
 				{
 					"day": "Ср",
-					"start": "10:00-13:00",
-					"end": "14:00–17:00"
+					"start": "10:00",
+					"end": "17:00",
+					"workbreak": "13:00-14:00"
 				},
 				{
 					"day": "Чт",
-					"start": "08:00",
-					"end": null
+					"start": null,
+					"end": null,
+					"workbreak": null
 				},
 				{
 					"day": "Пт",
 					"start": "10:00",
-					"end": "13:00"
+					"end": "13:00",
+					"workbreak": null
 				},
 				{
 					"day": "Сб",
 					"start": null,
-					"end": null
+					"end": null,
+					"workbreak": null
 				},
 				{
 					"day": "Вс",
 					"start": null,
-					"end": null
+					"end": null,
+					"workbreak": null
 				}
 			]
 		},
 		"tpl": [
-			"Адрес: {{address}}\n",
+			"*Адрес*: {{address}}\n",
 			"*Телефон:* {{phones}}\n",
 			"*Режим работы:* {{schedule}}\n",
 			"{{lonlat}}"
@@ -326,15 +354,15 @@
 				{
 					"day": null,
 					"start": null,
-					"end": null
+					"end": null,
+					"workbreak": null
 				}
 			]
 		},
 		"tpl": [
-			"Адрес: {{address}}\n",
-			"ИНН: {{inn}}",
+			"*Адрес*: {{address}}\n",
+			"*ИНН*: `{{inn}}`\n",
 			"*Телефон:* {{phones}}\n",
-			"*Режим работы:* {{schedule}}\n",
 			"*Полезные ссылки:* {{links}}\n"
 		]
 	},
@@ -350,9 +378,9 @@
 			"вызвать врача"
 		],
 		"regex": [
-			"(поликлиник[аео][й]?|взросл[ао][яй]) (?!\\1)(взросл[ао][яй]|поликлиник[аео][й]?)",
-			"(больниц[ае][й]?|взросл[ао][яй]) (?!\\1)(взросл[ао][яй]|больниц[ае][й]?)",
-			"(больниц[ае][й]?|поликлиник[аео][й]?)",
+			"(поликлиник[аеоу][й]?|взросл[аоу][яйю]) (?!\\1)(взросл[аоу][яйю]|поликлиник[аеоу][й]?)",
+			"(больниц[аеу][й]?|взросл[аоу][яйю]) (?!\\1)(взросл[аоу][яйю]|больниц[аеу][й]?)",
+			"(больниц[аеу][й]?|поликлиник[аеоу][й]?)",
 			"врач[а]?"
 		],
 		"title": "Поликлиника №54",
@@ -377,42 +405,49 @@
 				{
 					"day": "Пн",
 					"start": "08:00",
-					"end": "20:00"
+					"end": "20:00",
+					"workbreak": null
 				},
 				{
 					"day": "Вт",
 					"start": "08:00",
-					"end": "20:00"
+					"end": "20:00",
+					"workbreak": null
 				},
 				{
 					"day": "Ср",
 					"start": "08:00",
-					"end": "20:00"
+					"end": "20:00",
+					"workbreak": null
 				},
 				{
 					"day": "Чт",
 					"start": "08:00",
-					"end": "20:00"
+					"end": "20:00",
+					"workbreak": null
 				},
 				{
 					"day": "Пт",
 					"start": "08:00",
-					"end": "20:00"
+					"end": "20:00",
+					"workbreak": null
 				},
 				{
 					"day": "Сб",
 					"start": null,
-					"end": null
+					"end": null,
+					"workbreak": null
 				},
 				{
 					"day": "Вс",
 					"start": null,
-					"end": null
+					"end": null,
+					"workbreak": null
 				}
 			]
 		},
 		"tpl": [
-			"Адрес: {{address}}\n",
+			"*Адрес*: {{address}}\n",
 			"*Режим работы:* {{schedule}}\n",
 			"*Телефон:* {{phones}}\n"
 		]
@@ -425,8 +460,8 @@
 			"детская больница"
 		],
 		"regex": [
-			"(поликлиник[аео][й]?|детск[ао][яй]) (?!\\1)(детск[ао][яй]|поликлиник[аео][й]?)",
-			"(больниц[ае][й]?|детск[ао][яй]) (?!\\1)(детск[ао][яй]|больниц[ае][й]?)"
+			"(поликлиник[аеоу][й]?|детск[аоу][яйю]) (?!\\1)(детск[аоу][яйю]|поликлиник[аеоу][й]?)",
+			"(больниц[аеу][й]?|детск[аоу][яйю]) (?!\\1)(детск[аоу][яйю]|больниц[аеу][й]?)"
 		],
 		"title": "Детская поликлиника №46",
 		"data": {
@@ -450,42 +485,49 @@
 				{
 					"day": "Пн",
 					"start": "08:00",
-					"end": "20:00"
+					"end": "20:00",
+					"workbreak": null
 				},
 				{
 					"day": "Вт",
 					"start": "08:00",
-					"end": "20:00"
+					"end": "20:00",
+					"workbreak": null
 				},
 				{
 					"day": "Ср",
 					"start": "08:00",
-					"end": "20:00"
+					"end": "20:00",
+					"workbreak": null
 				},
 				{
 					"day": "Чт",
 					"start": "08:00",
-					"end": "20:00"
+					"end": "20:00",
+					"workbreak": null
 				},
 				{
 					"day": "Пт",
 					"start": "08:00",
-					"end": "20:00"
+					"end": "20:00",
+					"workbreak": null
 				},
 				{
 					"day": "Сб",
 					"start": "09:00",
-					"end": "14:00"
+					"end": "14:00",
+					"workbreak": null
 				},
 				{
 					"day": "Вс",
 					"start": null,
-					"end": null
+					"end": null,
+					"workbreak": null
 				}
 			]
 		},
 		"tpl": [
-			"Адрес: {{address}}\n",
+			"*Адрес*: {{address}}\n",
 			"*Режим работы:* {{schedule}}\n",
 			"*Телефон:* {{phones}}\n"
 		]
