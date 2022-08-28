@@ -91,16 +91,18 @@ public final class Bot extends TelegramLongPollingCommandBot {
 	 * Метод обработки ответа пользователю, на сообщение без команды
 	 */
 	private void setAnswer(Long chatId, String userName, String text) {
+		//первым сообщением идёт изображение
+		//или сообщение идёт как подпись к изображению
+		//вторым идёт текст сообщения
 		SendMessage message = new SendMessage();
 		SendMessageBuilder messageBuilder = SendMessage.builder().text("Вау! Что-то новенькое!");
 		SendMessage first = messageBuilder.chatId(chatId.toString()).build();
 		message.enableMarkdownV2(true);
 		message.setChatId(chatId.toString());
 		message.setText(text);
+		//третьим идёт геолокация при наличии
 
 		//форматирование шаблона по наличию совпадения
-
-
 		try {
 			execute(new BotCommandsConfig().setBotCommands());
 			execute(message);

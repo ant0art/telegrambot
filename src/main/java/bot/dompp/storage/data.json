@@ -213,28 +213,33 @@
 				}
 			],
 			"photo": null,
-			"links": {
-				"link1": [
-					"Поиск отправлений по трек-номеру",
-					"https://www.pochta.ru/tracking"
-				],
-				"link2": [
-					"Прием и вручение EMS отправлений",
-					"https://www.pochta.ru/emspost/"
-				],
-				"link3": [
-					"Доставка посылок почтальоном",
-					"https://www.pochta.ru/support/post-rules/home-delivery"
-				],
-				"link4": [
-					"Отправка посылок без очереди",
-					"https://www.pochta.ru/parcels"
-				],
-				"link5": [
-					"Ускоренное получение посылок",
-					"https://passport.pochta.ru/activate/ops"
-				]
-			}
+			"links": [
+				{
+					"type": "site",
+					"title": "Поиск отправлений по трек-номеру",
+					"url": "https://www.pochta.ru/tracking"
+				},
+				{
+					"type": "site",
+					"title": "Прием и вручение EMS отправлений",
+					"url": "https://www.pochta.ru/emspost/"
+				},
+				{
+					"type": "site",
+					"title": "Доставка посылок почтальоном",
+					"url": "https://www.pochta.ru/support/post-rules/home-delivery"
+				},
+				{
+					"type": "site",
+					"title": "Отправка посылок без очереди",
+					"url": "https://www.pochta.ru/parcels"
+				},
+				{
+					"type": "site",
+					"title": "Ускоренное получение посылок",
+					"url": "https://passport.pochta.ru/activate/ops"
+				}
+			]
 		},
 		"tpl": [
 			"*Адрес:* {{address}}\n",
@@ -340,28 +345,22 @@
 				"+78123393928",
 				"тел./факс."
 			],
-			"links": {
-				"link1": [
-					"Email",
-					"info@ukmida47.ru"
-				],
-				"link2": [
-					"URL",
-					"http://www.ukmida47.ru"
-				]
-			},
-			"schedule": [
+			"links": [
 				{
-					"day": null,
-					"start": null,
-					"end": null,
-					"workbreak": null
+					"type": "Email",
+					"title": "Электронный адрес для обращений",
+					"url": "info@ukmida47.ru"
+				},
+				{
+					"type": "site",
+					"title": "Сайт УК МИДА",
+					"url": "http://www.ukmida47.ru"
 				}
 			]
 		},
 		"tpl": [
 			"Адрес: {{address}}\n",
-			"ИНН: {{inn}}",
+			"ИНН: {{inn}}\n",
 			"*Телефон:* {{phones}}\n",
 			"*Полезные ссылки:* {{links}}\n"
 		]
