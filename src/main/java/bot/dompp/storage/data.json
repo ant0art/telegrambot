@@ -62,14 +62,14 @@
 					"workbreak": null
 				}
 			],
-			"photo": null
+			"photo": [
+				"AgACAgIAAxkBAAIImmMNA7i8rzXYzI72c8cL8_jqORFvAAJnwTEbuORoSPKPzWZN1PsqAQADAgADbQADKQQ"
+			]
 		},
 		"tpl": [
 			"*Адрес:* {{address}}\n",
 			"*Телефон:* {{phones}}\n",
-			"*Режим работы:* {{schedule}}\n",
-			"{{photo}}",
-			"{{lonlat}}"
+			"*Режим работы:* {{schedule}}\n"
 		]
 	},
 	"stadion": {
@@ -136,17 +136,18 @@
 				}
 			],
 			"tg": "https://t.me/polustrovoparksport",
-			"photo": null
+			"photo": [
+				"AgACAgIAAxkBAAIIdmMM-acm9jDrRbX595jf0lxHpd04AAJ7tDEbjZpQSWz2dGlkVp4SAQADAgADcwADKQQ",
+				"AgACAgIAAxkBAAIIjWMM_Qmbka5N9C2hYFG4YyYFPq-GAALntTEbvdI5SU4KntE0BFjLAQADAgADeAADKQQ"
+			]
 		},
 		"tpl": [
 			"*Адрес:* {{address}}\n",
-			"Попасть на стадион можно через главный вход на территорию школы, который находится со стороны Кондратьевского проспекта. Перелезать через ограждения настоятельно не рекомендуем\n",
+			"*Комментарий:* Попасть на стадион можно через главный вход на территорию школы, который находится со стороны Кондратьевского проспекта. Перелезать через ограждения настоятельно не рекомендуем\n",
 			"*Телефон:* {{phones}}\n",
 			"*Telegram чат для спортсменов:* {{tg}}\n",
 			"*Режим работы:* {{schedule}}\n",
-			"*Вход свободный*\n",
-			"{{photo}}",
-			"{{lonlat}}"
+			"*Вход свободный*\n"
 		]
 	},
 	"post": {
@@ -212,7 +213,9 @@
 					"workbreak": null
 				}
 			],
-			"photo": null,
+			"photo": [
+				"AgACAgIAAxkBAAIIm2MNBMGQm_18QwABdXBCydM9bjn3YgACicExG7jkaEinjVZPvviaqgEAAwIAA20AAykE"
+			],
 			"links": [
 				{
 					"type": "site",
@@ -247,9 +250,7 @@
 			"*Телефон:* {{phones}}\n",
 			"В отделении 9 окон обслуживания.\n",
 			"*Режим работы:* {{schedule}}\n",
-			"*Полезные ссылки:* {{links}}\n",
-			"{{photo}}\n",
-			"{{lonlat}}\n"
+			"*Полезные ссылки:* {{links}}\n"
 		]
 	},
 	"militaryOffice": {
@@ -268,6 +269,9 @@
 			],
 			"phones": [
 				"+78125423204"
+			],
+			"photo": [
+				"AgACAgIAAxkBAAIInGMNBRu4ugeQAwuODB3r0l7MyCI4AAKPwTEbuORoSBFEYnKYpAEOAQADAgADbQADKQQ"
 			],
 			"schedule": [
 				{
@@ -317,8 +321,7 @@
 		"tpl": [
 			"*Адрес*: {{address}}\n",
 			"*Телефон:* {{phones}}\n",
-			"*Режим работы:* {{schedule}}\n",
-			"{{lonlat}}"
+			"*Режим работы:* {{schedule}}\n"
 		]
 	},
 	"utilityService": {
@@ -335,7 +338,10 @@
 		"title": "Администрация УК \"МИДА\"",
 		"data": {
 			"address": "Западный пр-зд, д. 11, корп. 1, лит. А, гп им. Свердлова, Ленинградская обл., 188682",
-			"lonlat": [],
+			"lonlat": [
+				59.984814,
+				30.393645
+			],
 			"inn": "7805734102",
 			"phones": [
 				"+78122450791",
@@ -385,7 +391,10 @@
 		"title": "Поликлиника №54",
 		"data": {
 			"address": "ул. Васенко, д.9",
-			"lonlat": [],
+			"lonlat": [
+				59.969544,
+				30.392980
+			],
 			"phones": [
 				[
 					"122",
@@ -399,6 +408,9 @@
 					"+78124098192",
 					"Вызов врача"
 				]
+			],
+			"photo": [
+				"AgACAgIAAxkBAAIInmMNBaz3rmg3Ahuxk2uJAsumpYZrAAKfwTEbuORoSBkpwaTpR1MBAQADAgADbQADKQQ"
 			],
 			"schedule": [
 				{
@@ -465,7 +477,10 @@
 		"title": "Детская поликлиника №46",
 		"data": {
 			"address": "ул. Бестужевская, д.32",
-			"lonlat": [],
+			"lonlat": [
+				59.982946,
+				30.413618
+			],
 			"phones": [
 				[
 					"+78122423230",
@@ -479,6 +494,9 @@
 					"+78122423234",
 					"Вызов врача"
 				]
+			],
+			"photo": [
+				"AgACAgIAAxkBAAIIoGMNBfxqSZ6t477cEIa1aHLX8h3uAAKhwTEbuORoSKqA5NQ2-50BAQADAgADbQADKQQ"
 			],
 			"schedule": [
 				{

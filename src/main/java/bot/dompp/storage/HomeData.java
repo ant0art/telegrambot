@@ -46,6 +46,15 @@ public class HomeData extends BotLibrary {
 			this.tpl = new String[] {};
 		}
 
+
+		/**
+		 * @return the data
+		 */
+		public JsonObject getData() {
+			return data;
+		}
+
+
 		public class Shedule {
 			List<DayOfWork> daysOfWork;
 			private static Logger logger = LoggerFactory.getLogger(Shedule.class);
