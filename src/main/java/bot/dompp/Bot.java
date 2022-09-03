@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.telegram.telegrambots.extensions.bots.commandbot.TelegramLongPollingCommandBot;
 import org.telegram.telegrambots.extensions.bots.commandbot.commands.IBotCommand;
+import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendLocation;
 import org.telegram.telegrambots.meta.api.methods.send.SendMediaGroup;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -22,7 +23,9 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonNull;
 import bot.dompp.commands.BotCommandsConfig;
-import bot.dompp.commands.service.*;
+import bot.dompp.commands.service.HelpCommand;
+import bot.dompp.commands.service.SearchCommand;
+import bot.dompp.commands.service.StartCommand;
 import bot.dompp.storage.HomeData;
 import bot.dompp.storage.HomeData.HomeDataObj;
 
@@ -58,6 +61,20 @@ public final class Bot extends TelegramLongPollingCommandBot {
 		return BOT_TOKEN;
 	}
 
+	@Override
+	public void onRegister() {
+		executeCommand(BotCommandsConfig.getDefaultCommands());
+	}
+	
+	private void executeCommand(BotApiMethod <?> method) {
+		try {
+			execute(method);
+		} catch (TelegramApiException e) {
+			e.printStackTrace();
+			logger.debug(e.getMessage());
+		}
+	}
+
 	/*
 	 * Метод обработки всех сообщений от пользователя, которые не являются командой
 	 */
@@ -65,6 +82,7 @@ public final class Bot extends TelegramLongPollingCommandBot {
 	public void processNonCommandUpdate(Update update) {
 		Message inMess = update.getMessage();
 		Long chatId = inMess.getChatId();
+		String chatType = update.getMessage().getChat().getType();
 
 
 		String response = parseMessage(inMess);
@@ -74,11 +92,9 @@ public final class Bot extends TelegramLongPollingCommandBot {
 		setAnswer(chatId, Utils.getUserName(inMess), response, photo, lonlat);
 	}
 
-	public void setAnswer(Long chatId, String userName, String response, String[] photo,
-			Double[] lonlat) {
+	public void setAnswer(Long chatId, String userName, String response, String[] photo, Double[] lonlat) {
 
 		try {
-			execute(new BotCommandsConfig().setBotCommands());
 			SendMessage mess = new SendMessage();
 			SendPhoto photoMess = new SendPhoto();
 			mess.enableMarkdownV2(true);
@@ -87,48 +103,63 @@ public final class Bot extends TelegramLongPollingCommandBot {
 			photoMess.setChatId(chatId);
 			photoMess.setParseMode("MarkdownV2");
 
-			SendMediaGroup mediaGroup = new SendMediaGroup();
-			List<InputMedia> listMedia = new ArrayList<>();
-			if (photo.length >= 2) {
-				int n = photo.length > 10 ? 10 : photo.length;
-				for (int i = 0; i < n; i++) {
-					InputMediaPhoto inputMediaPhoto = new InputMediaPhoto();
-					inputMediaPhoto.setMedia(photo[i]);
-					listMedia.add(inputMediaPhoto);
-				}
-				mediaGroup.setMedias(listMedia);
-				mediaGroup.setChatId(chatId);
-				/* Group without caption*/
-				if (response.length() > 1024) {
-					execute(mediaGroup);
+			switch (photo.length) {
+				case 0:
 					execute(mess);
-				} else {
-					/* Group with caption*/
-					listMedia.get(0).setCaption(response);
-					listMedia.get(0).setParseMode("MarkdownV2");
-					execute(mediaGroup);
-				}
-			} else if (photo.length == 1) {
-				/* Alone Photo without caption */
-				photoMess.setPhoto(new InputFile(photo[0]));
-				if (response.length() > 1024) {
-					execute(photoMess);
-					execute(mess);
-				} else {
-					/* Alone Photo with caption */
-					photoMess.setCaption(response);
-					execute(photoMess);
-				}
-			} else {
-				execute(mess);
+					break;
+				case 1:
+					/* Alone Photo without caption */
+					photoMess.setPhoto(new InputFile(photo[0]));
+					if (response.length() > 1024) {
+						execute(photoMess);
+						execute(mess);
+
+					} else {
+						/* Alone Photo with caption */
+						photoMess.setCaption(response);
+						execute(photoMess);
+					}
+					break;
+				default:
+					SendMediaGroup mediaGroup = getMediaGroupForAnswer(chatId, response, photo);
+					/* Group without caption */
+					if (response.length() > 1024) {
+						execute(mediaGroup);
+						execute(mess);
+
+					} else {
+						/* Group with caption */
+						execute(mediaGroup);
+					}
 			}
 
 			if (lonlat.length != 0) {
-				execute(new SendLocation(chatId.toString(), lonlat[0], lonlat[1]));
+				 execute(new SendLocation(chatId.toString(), lonlat[0], lonlat[1]));
 			}
 		} catch (TelegramApiException e) {
 			e.printStackTrace();
 		}
+	}
+
+	public SendMediaGroup getMediaGroupForAnswer(Long chatId, String response, String[] photo) {
+		SendMediaGroup mediaGroup = new SendMediaGroup();
+		mediaGroup.setChatId(chatId);
+		List<InputMedia> listMedia = new ArrayList<>();
+		if (photo.length >= 2) {
+			int n = photo.length > 10 ? 10 : photo.length;
+			for (int i = 0; i < n; i++) {
+				InputMediaPhoto inputMediaPhoto = new InputMediaPhoto();
+				inputMediaPhoto.setMedia(photo[i]);
+				listMedia.add(inputMediaPhoto);
+			}
+			mediaGroup.setMedias(listMedia);
+		}
+		if (response.length() <= 1024) {
+			listMedia.get(0).setCaption(response);
+			listMedia.get(0).setParseMode("MarkdownV2");
+		}
+
+		return mediaGroup;
 	}
 
 	public String[] getPhotoForAnswer(Message inMess) {
@@ -166,6 +197,16 @@ public final class Bot extends TelegramLongPollingCommandBot {
 	}
 
 	public String parseMessage(Message inMess) {
+
+		DeleteMessage messToDel = new DeleteMessage();
+		if (inMess.isCommand()) {
+			String s = BotCommandsConfig.getCommandWithoutBotName(inMess.getText());
+			if (s.equals("/delete")) {
+				int i = inMess.getReplyToMessage().getMessageId();
+				messToDel.setChatId(inMess.getChatId());
+			}
+		}
+
 		String userName = Utils.getUserName(inMess);
 		/* Default answer */
 		String response = String.format(
@@ -265,7 +306,7 @@ public final class Bot extends TelegramLongPollingCommandBot {
 					// deleteMessage(chatId, messageId);
 					// SendMessage mess = new SendMessage();
 					// execute(mess);
-					deleteMessage(chatId, messageIds);
+					deleteMessages(chatId, messageIds);
 				}
 			} catch (InterruptedException e) {
 				e.printStackTrace();
@@ -274,7 +315,7 @@ public final class Bot extends TelegramLongPollingCommandBot {
 
 		}
 
-		public void deleteMessage(Long chatId, List<Integer> messageIds) {
+		public void deleteMessages(Long chatId, List<Integer> messageIds) {
 			DeleteMessage messToDel = new DeleteMessage();
 			messToDel.setChatId(chatId);
 
@@ -287,5 +328,10 @@ public final class Bot extends TelegramLongPollingCommandBot {
 				e.printStackTrace();
 			}
 		}
+	}
+
+	public void deleteMessage(Update update) {
+		String request = update.getMessage().getText();
+
 	}
 }
