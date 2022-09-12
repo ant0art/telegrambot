@@ -1,6 +1,7 @@
 *.log
 *.properties
 *.editorconfig
+*.json
 
 .vscode/
 .mvn/

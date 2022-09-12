@@ -10,8 +10,8 @@ import org.telegram.telegrambots.meta.api.objects.User;
 import org.telegram.telegrambots.meta.bots.AbsSender;
 import com.google.gson.JsonArray;
 import bot.dompp.Utils;
+import bot.dompp.storage.EnvVars;
 import bot.dompp.storage.MyJsonParser;
-import bot.dompp.storage.MyPath;
 
 public class SearchCommand extends ServiceCommand {
 	private Logger logger = LoggerFactory.getLogger(SearchCommand.class);
@@ -34,8 +34,8 @@ public class SearchCommand extends ServiceCommand {
 
 
 		logger.info("Begin injection of keys of json");
-		Map<String, JsonArray> mp =
-				new MyJsonParser(MyPath.DATA.getPath())
+						Map<String, JsonArray> mp =
+				new MyJsonParser(EnvVars.getVal("DATA"))
 						.getPossibleRequests("keys");
 
 		for (Map.Entry<String, JsonArray> entries : mp.entrySet()) {

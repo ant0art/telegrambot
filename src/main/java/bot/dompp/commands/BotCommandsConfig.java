@@ -8,27 +8,26 @@ import org.telegram.telegrambots.meta.api.objects.commands.scope.BotCommandScope
 
 public class BotCommandsConfig {	private static final String BOT_NAME_DELIMITER = "@";
 
-	private SetMyCommands defaultCommands;
-	private SetMyCommands adminCommands;
+	// private SetMyCommands defaultCommands;
+	// private SetMyCommands adminCommands;
 
-	public BotCommandsConfig() {}
+	private BotCommandsConfig() {}
 
 	public static SetMyCommands getDefaultCommands() {
 		SetMyCommands setDefaultCommands = new SetMyCommands();
 		List<BotCommand> defaultCommandsList =
 				Arrays.asList(createCommand("search", "Список ключевых слов"),
-						createCommand("help", "Список доступных команд"),
-						createCommand("delete", "Удалить сообщение"));
+						createCommand("help", "Список доступных команд"));
 		setDefaultCommands.setCommands(defaultCommandsList);
 		return setDefaultCommands;
 	}
 
 
-	public final void setDefaultCommands(SetMyCommands defaultCommands) {
-		this.defaultCommands = defaultCommands;
-	}
+	// public final void setDefaultCommands(SetMyCommands defaultCommands) {
+	// 	this.defaultCommands = defaultCommands;
+	// }
 	
-	public SetMyCommands getAdminCommands() {
+	public static SetMyCommands getAdminCommands() {
 
 		SetMyCommands.SetMyCommandsBuilder setAdminCommands =
 				SetMyCommands.builder().scope(new BotCommandScopeAllChatAdministrators());
@@ -36,13 +35,14 @@ public class BotCommandsConfig {	private static final String BOT_NAME_DELIMITER 
 				Arrays.asList(createCommand("search", "Список ключевых слов"),
 						createCommand("help", "Список доступных команд"),
 						createCommand("delete", "Удалить сообщение"));
+		
 		setAdminCommands.commands(adminCommandsList);
 		return setAdminCommands.build();
 	}
 
-	public void setAdminCommands(SetMyCommands adminCommands) {
-		this.adminCommands = adminCommands;
-	}
+	// public void setAdminCommands(SetMyCommands adminCommands) {
+	// 	this.adminCommands = adminCommands;
+	// }
 
 	public static String getCommandWithoutBotName(String command) {
 		return command.split(BOT_NAME_DELIMITER)[0].trim();
@@ -51,27 +51,4 @@ public class BotCommandsConfig {	private static final String BOT_NAME_DELIMITER 
 	private static BotCommand createCommand(String commandName, String description) {
 		return BotCommand.builder().command(commandName).description(description).build();
 	}
-
-
-	// public void deleteMessage(Message inMess) {
-
-	// if (inMess.isCommand()) {
-	// if()
-	// int idReplyMess = inMess.getReplyToMessage().getMessageId();
-
-	// inMess.
-
-	// SendMessage message = new SendMessage();
-	// message.setChatId(inMess.getChatId());
-	// message.setText("тест команды Delete");
-	// try {
-	// execute(message);
-	// } catch (TelegramApiException e) {
-	// // TODO Auto-generated catch block
-	// e.printStackTrace();
-	// }
-	// }
-	// }
-
-
 }

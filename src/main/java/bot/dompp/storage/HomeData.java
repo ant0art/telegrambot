@@ -13,6 +13,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import javax.annotation.Nonnull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.google.gson.Gson;
@@ -28,8 +29,9 @@ import bot.dompp.storage.HomeData.HomeDataObj.Shedule;
 
 public class HomeData extends BotLibrary {
 	private static Logger logger = LoggerFactory.getLogger(HomeData.class);
+	static final Map<String, String> getenv = System.getenv();
 
-	private static String path = MyPath.DATA.getPath();
+	private static String path = EnvVars.getVal("DATA");
 
 	public class HomeDataObj {
 		private String[] keys;
@@ -302,13 +304,11 @@ public class HomeData extends BotLibrary {
 		logger.info("start metod getDataString");
 		switch (result) {
 			case "lonlat": {
-				result = regTmp.replace(regTmp.substring(start, end), "\n" +
-				sElement.toString());
+				result = regTmp.replace(regTmp.substring(start, end), "\n" + sElement.toString());
 				break;
 			}
 			case "photo": {
-				result = regTmp.replace(regTmp.substring(start, end), "\n" +
-				sElement.toString());
+				result = regTmp.replace(regTmp.substring(start, end), "\n" + sElement.toString());
 				break;
 			}
 			case "phones": {
@@ -372,9 +372,9 @@ public class HomeData extends BotLibrary {
 		super();
 	}
 
-	public static JsonElement getParser() {
+	public static @Nonnull JsonElement getParser() {
 		Reader reader;
-		JsonElement parser = null;
+		JsonElement parser = new JsonObject();
 
 		try {
 			// собираем данные по востребованным объектам из файла
