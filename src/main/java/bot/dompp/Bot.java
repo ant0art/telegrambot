@@ -1,18 +1,18 @@
 package bot.dompp;
 
+import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.telegram.telegrambots.extensions.bots.commandbot.TelegramLongPollingCommandBot;
-import org.telegram.telegrambots.extensions.bots.commandbot.commands.IBotCommand;
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage.SendMessageBuilder;
-import org.telegram.telegrambots.meta.api.objects.Message;
+import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
+import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import bot.dompp.commands.BotCommandsConfig;
-import bot.dompp.commands.service.*;
-import bot.dompp.storage.HomeData;
-import bot.dompp.storage.HomeData.HomeDataObj;
+import bot.dompp.commands.service.HelpCommand;
+import bot.dompp.commands.service.SearchCommand;
+import bot.dompp.commands.service.StartCommand;
+import bot.dompp.handlers.TelegramMessageParser;
 
 public final class Bot extends TelegramLongPollingCommandBot {
 	private Logger logger = LoggerFactory.getLogger(Bot.class);
@@ -36,36 +36,6 @@ public final class Bot extends TelegramLongPollingCommandBot {
 		register(new HelpCommand(this));
 	}
 
-	// обработчик входящего сообщения
-	public String parseMessage(Message inputMessage) {
-		String userName = Utils.getUserName(inputMessage);
-
-		logger.info("FIRST VAR FOR RESPONSE");
-		// Ответ, поступающий в любом случае, если не будет перезаписан
-		String response = String.format(
-				"@%s, очень неразборчиво написано\\! Я обязательно научусь выдавать больше информации\\! Но сперва всё же ознакомься со списком известных команд здесь /help",
-				userName);
-
-		// ответ на попытку пользователя использовать команду, которой нет
-		if (inputMessage.isCommand()) {
-			for (IBotCommand cmd : HelpCommand.getmCommandRegistry().getRegisteredCommands()) {
-				if (!inputMessage.getText().equals(cmd.getCommandIdentifier()))
-					response = String.format(
-							"@%s, я подобной команды не знаю\\. Попробуй найти подходящую здесь /help",
-							userName);
-			}
-		}
-
-		logger.info("TRY TO COMPARE");
-
-		HomeDataObj newObj = HomeData.hasMatch(inputMessage.getText());
-		logger.info(String.format("Have any matches? - %s", newObj == null));
-		if(newObj != null) {
-			response = HomeData.matchAnswer(newObj);
-		}
-		return response;
-	}
-
 	@Override
 	public String getBotUsername() {
 		return BOT_NAME;
@@ -76,41 +46,121 @@ public final class Bot extends TelegramLongPollingCommandBot {
 		return BOT_TOKEN;
 	}
 
+	@Override
+	public void onRegister() {
+		executeCommand(BotCommandsConfig.getDefaultCommands());
+		executeCommand(BotCommandsConfig.getAdminCommands());
+	}
+	
+	private void executeCommand(BotApiMethod<?> method) {
+		try {
+			execute(method);
+		} catch (TelegramApiException e) {
+			e.printStackTrace();
+			logger.debug(e.getMessage());
+		}
+	}
+	
 	/*
 	 * Метод обработки всех сообщений от пользователя, которые не являются командой
 	 */
 	@Override
 	public void processNonCommandUpdate(Update update) {
-		Message inMess = update.getMessage();
-		Long chatId = inMess.getChatId();
-		String response = parseMessage(inMess);
-		setAnswer(chatId, Utils.getUserName(inMess), response);
+		TelegramMessageParser parser = new TelegramMessageParser(this, update.getMessage());
+		
+		parser.parseMessage();
 	}
 
-	/*
-	 * Метод обработки ответа пользователю, на сообщение без команды
-	 */
-	private void setAnswer(Long chatId, String userName, String text) {
-		//первым сообщением идёт изображение
-		//или сообщение идёт как подпись к изображению
-		//вторым идёт текст сообщения
-		SendMessage message = new SendMessage();
-		SendMessageBuilder messageBuilder = SendMessage.builder().text("Вау! Что-то новенькое!");
-		SendMessage first = messageBuilder.chatId(chatId.toString()).build();
-		message.enableMarkdownV2(true);
-		message.setChatId(chatId.toString());
-		message.setText(text);
-		//третьим идёт геолокация при наличии
+	public class MyDeleteMessage implements Runnable {
 
-		//форматирование шаблона по наличию совпадения
-		try {
-			execute(new BotCommandsConfig().setBotCommands());
-			execute(message);
-			execute(first);
-		} catch (TelegramApiException e) {
-			logger.error(String.format("ERROR %s. Message doesn`t consist command. User: %s",
-					e.getMessage(), userName));
-			e.printStackTrace();
+		private Long chatId;
+		private int messageId;
+		private List<Integer> messageIds;
+
+
+		/**
+		 * @return the messageIds
+		 */
+		public List<Integer> getMessageIds() {
+			return messageIds;
+		}
+
+		/**
+		 * @param messageIds the messageIds to set
+		 */
+		public void setMessageIds(List<Integer> messageIds) {
+			this.messageIds = messageIds;
+		}
+
+		/**
+		 *
+		 */
+		public MyDeleteMessage() {}
+
+		/**
+		 * @return the chatId
+		 */
+		public Long getChatId() {
+			return chatId;
+		}
+
+		/**
+		 * @param chatId the chatId to set
+		 */
+		public void setChatId(Long chatId) {
+			this.chatId = chatId;
+		}
+
+		/**
+		 * @return the messageId
+		 */
+		public int getMessageId() {
+			return messageId;
+		}
+
+		/**
+		 * @param messageId the messageId to set
+		 */
+		public void setMessageId(int messageId) {
+			this.messageId = messageId;
+		}
+
+		/**
+		 * @param name
+		 */
+		public MyDeleteMessage(Long chatId, int messageId) {
+			this.chatId = chatId;
+			this.messageId = messageId;
+		}
+
+		@Override
+		public void run() {
+			try {
+				synchronized (this) {
+					while (true) {
+						wait(5000);
+						break;
+					}
+					deleteMessages(chatId, messageIds);
+				}
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+				Thread.currentThread().interrupt();
+			}
+		}
+
+		public void deleteMessages(Long chatId, List<Integer> messageIds) {
+			DeleteMessage messToDel = new DeleteMessage();
+			messToDel.setChatId(chatId);
+
+			try {
+				for (Integer i : messageIds) {
+					messToDel.setMessageId(i);
+					execute(messToDel);
+				}
+			} catch (TelegramApiException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 }

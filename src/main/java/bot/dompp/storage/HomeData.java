@@ -5,14 +5,15 @@ import java.io.Reader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import javax.annotation.Nonnull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.google.gson.Gson;
@@ -28,8 +29,9 @@ import bot.dompp.storage.HomeData.HomeDataObj.Shedule;
 
 public class HomeData extends BotLibrary {
 	private static Logger logger = LoggerFactory.getLogger(HomeData.class);
+	static final Map<String, String> getenv = System.getenv();
 
-	private static String path = MyPath.DATA.getPath();
+	private static String path = EnvVars.getVal("DATA");
 
 	public class HomeDataObj {
 		private String[] keys;
@@ -44,6 +46,13 @@ public class HomeData extends BotLibrary {
 			this.title = "";
 			this.data = new JsonObject();
 			this.tpl = new String[] {};
+		}
+
+		/**
+		 * @return the data
+		 */
+		public JsonObject getData() {
+			return data;
 		}
 
 		public class Shedule {
@@ -216,6 +225,7 @@ public class HomeData extends BotLibrary {
 
 			}
 		}
+
 	}
 
 	public static HomeDataObj hasMatch(String userMessage) {
@@ -252,57 +262,34 @@ public class HomeData extends BotLibrary {
 		return result;
 	}
 
-	public static String matchAnswer(HomeDataObj homeDataObj) {
-		String templateAnswer = "";
+	public static String setMatchAnswer(HomeDataObj homeDataObj) {
 		StringBuilder sBuilder = new StringBuilder("*").append(homeDataObj.title).append("*\n");
-		// получаем все объекты data, которые могут быть использованы в шаблоне сообщения
 		JsonObject dataObj = homeDataObj.data;
-		try {
-			// перебираем все пары объекта data
-			// получаем все значения из шаблона ответа на сообщение пользвателю
-			for (int i = 0; i < homeDataObj.tpl.length; i++) {
-
-				String s = homeDataObj.tpl[i];
-				String tmp = "";
-				String regexStr = ".*\\{\\{.+?}}[\\s\\S\\n]*";
-				// если в строке шаблона найдено совпадение, то работаем дальше с этой
-				// строкой совпадения
-				if (Pattern.matches(regexStr, s)) {
-					logger.info("Match found, go next");
-					regexStr = "\\{\\{.+?}}";
-					Pattern p = Pattern.compile(regexStr, Pattern.CASE_INSENSITIVE);
-					Matcher m = p.matcher(s);
-					while (m.find()) {
-						// возвращаем во временной строке результат совпадения, чтобы
-						// сравнить с ключами data
-						int start = m.start();
-						int end = m.end();
-						tmp = s.substring(start + 2, end - 2);
-						for (Map.Entry<String, JsonElement> dEntry2 : dataObj.entrySet()) {
-							logger.info("Start checking data-map secondly");
-							// если в шаблоне regex выражение совпадет с ключем data, едем
-							// дальше
-							if (tmp.equals(dEntry2.getKey())) {
-								logger.info(String.format("check, s = %s", s));
-
-								templateAnswer = sBuilder
-										.append(getDataString(dEntry2.getValue(), s, start, end))
-										.toString();
-								logger.info(String.format("tempAnswer = %s", templateAnswer));
-							}
-						}
+		for (int i = 0; i < homeDataObj.tpl.length; i++) {
+			String s = homeDataObj.tpl[i];
+			String tmp = "";
+			String regexStr = "\\{\\{.+?}}";
+			Pattern p = Pattern.compile(regexStr, Pattern.CASE_INSENSITIVE);
+			Matcher m = p.matcher(s);
+			while (m.find()) {
+				// возвращаем во временной строке результат совпадения, чтобы
+				// сравнить с ключами data
+				int start = m.start();
+				int end = m.end();
+				tmp = s.substring(start + 2, end - 2);
+				for (Map.Entry<String, JsonElement> dEntry2 : dataObj.entrySet()) {
+					// если в шаблоне regex выражение совпадет с ключем data, едем
+					// дальше
+					if (tmp.equals(dEntry2.getKey())) {
+						sBuilder.append(getDataString(dEntry2.getValue(), s, start, end))
+								.toString();
 					}
-				} else {
-					templateAnswer = sBuilder.append(s).toString();
 				}
 			}
-		} catch (Exception ex) {
-			ex.printStackTrace();
+
 		}
-		templateAnswer = replaceWithSlash(templateAnswer);
 
-		return templateAnswer;
-
+		return replaceWithSlash(sBuilder.toString());
 	}
 
 	/**
@@ -317,6 +304,10 @@ public class HomeData extends BotLibrary {
 		logger.info("start metod getDataString");
 		switch (result) {
 			case "lonlat": {
+				result = regTmp.replace(regTmp.substring(start, end), "\n" + sElement.toString());
+				break;
+			}
+			case "photo": {
 				result = regTmp.replace(regTmp.substring(start, end), "\n" + sElement.toString());
 				break;
 			}
@@ -381,9 +372,9 @@ public class HomeData extends BotLibrary {
 		super();
 	}
 
-	public static JsonElement getParser() {
+	public static @Nonnull JsonElement getParser() {
 		Reader reader;
-		JsonElement parser = null;
+		JsonElement parser = new JsonObject();
 
 		try {
 			// собираем данные по востребованным объектам из файла
