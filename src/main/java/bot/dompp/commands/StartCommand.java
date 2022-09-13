@@ -1,14 +1,14 @@
-package bot.dompp.commands.service;
+package bot.dompp.commands;
 
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.commands.BotCommand;
 import org.telegram.telegrambots.meta.bots.AbsSender;
+import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import bot.dompp.Utils;
-import bot.dompp.commands.BaseCommand;
-import bot.dompp.commands.BotCommandsConfig;
 
 public class StartCommand extends BaseCommand {
 	private Logger logger = LoggerFactory.getLogger(StartCommand.class);
@@ -28,6 +28,17 @@ public class StartCommand extends BaseCommand {
 					.append(botCommand.getDescription().toLowerCase()).append("_\n");
 		}
 
-		sendMessage(absSender, message, response.toString());
+		SendMessage outMess = new SendMessage();
+
+		// включаем поддержку режима разметки
+		outMess.enableMarkdownV2(true);
+		outMess.setChatId(message.getChatId());
+		outMess.setText(response.toString());
+
+		try {
+			absSender.execute(outMess);
+		} catch (TelegramApiException e) {
+			e.printStackTrace();
+		}
 	}
 }

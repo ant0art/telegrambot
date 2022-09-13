@@ -32,7 +32,7 @@ public class HomeData extends BotLibrary {
 	static final Map<String, String> getenv = System.getenv();
 
 	private static String path = EnvVars.getVal("DATA");
-
+	
 	public class HomeDataObj {
 		private String[] keys;
 		private String[] regex;

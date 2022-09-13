@@ -5,38 +5,27 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.telegram.telegrambots.meta.api.objects.Chat;
-import org.telegram.telegrambots.meta.api.objects.User;
+import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.bots.AbsSender;
 import com.google.gson.JsonArray;
 import bot.dompp.Utils;
+import bot.dompp.commands.BaseCommand;
 import bot.dompp.storage.EnvVars;
 import bot.dompp.storage.MyJsonParser;
 
-public class SearchCommand extends ServiceCommand {
+public class SearchCommand extends BaseCommand {
 	private Logger logger = LoggerFactory.getLogger(SearchCommand.class);
 
-	/**
-	 * @param identifier - name of command
-	 * @param description - what command do
-	 */
-	public SearchCommand(String identifier, String description) {
-		super(identifier, description);
-	}
-
 	@Override
-	public void execute(AbsSender absSender, User user, Chat chat, String[] strings) {
-		String userName = Utils.getUserName(user);
+	public void runCommand(AbsSender absSender, Message message) {
+		String userName = Utils.getUserName(message.getFrom());
 
 		StringBuilder response = new StringBuilder(String.format(
-				"@%s, пока что я могу вывести только свой потенциал для поиска, но не сам результат. Нажмите на ключевое слово, и результат будет скопирован. Вставьте его в строку сообщения и осуществите поиск.%n*Вот предварительный список будущих ключевых слов:*%n%n",
+				"@%s, нажмите на ключевое слово, и результат будет скопирован. Вставьте его в строку сообщения и осуществите поиск.%n*Вот предварительный список ключевых слов:*%n%n",
 				userName));
 
-
-		logger.info("Begin injection of keys of json");
-						Map<String, JsonArray> mp =
-				new MyJsonParser(EnvVars.getVal("DATA"))
-						.getPossibleRequests("keys");
+		Map<String, JsonArray> mp =
+				new MyJsonParser(EnvVars.getVal("DATA")).getPossibleRequests("keys");
 
 		for (Map.Entry<String, JsonArray> entries : mp.entrySet()) {
 			logger.info("Catch the pair key value");
@@ -61,23 +50,18 @@ public class SearchCommand extends ServiceCommand {
 		String templateAnswer = response.toString();
 		Pattern.compile("\"").matcher(templateAnswer).replaceAll("");
 
-        String regexStr = "([-.+?^$(){}])";
-        StringBuffer buffer = new StringBuffer();
-        Pattern p = Pattern.compile(regexStr, Pattern.CASE_INSENSITIVE);
-        Matcher m = p.matcher(templateAnswer);
-        while (m.find()) {
-            m.appendReplacement(buffer, "\\\\$1");
-        }
-        m.appendTail(buffer);
-        templateAnswer = buffer.toString();
+		String regexStr = "([-.+?^$(){}])";
+		StringBuffer buffer = new StringBuffer();
+		Pattern p = Pattern.compile(regexStr, Pattern.CASE_INSENSITIVE);
+		Matcher m = p.matcher(templateAnswer);
+		while (m.find()) {
+			m.appendReplacement(buffer, "\\\\$1");
+		}
+		m.appendTail(buffer);
+		templateAnswer = buffer.toString();
+		logger.info(templateAnswer);
 
-		logger.debug(String.format("User: %s. Command starts: %s", userName,
-				this.getCommandIdentifier()));
-				logger.info(templateAnswer);
-		sendAnswer(absSender, chat.getId(), this.getCommandIdentifier(), userName,
-				templateAnswer);
-		logger.debug(
-				String.format("User %s. Command ends %s", userName, this.getCommandIdentifier()));
+		sendMessage(absSender, message, templateAnswer);
 	}
 }
 

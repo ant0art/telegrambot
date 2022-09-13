@@ -9,9 +9,6 @@ import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import bot.dompp.commands.BotCommandsConfig;
-import bot.dompp.commands.service.HelpCommand;
-import bot.dompp.commands.service.SearchCommand;
-import bot.dompp.commands.service.StartCommand;
 import bot.dompp.handlers.TelegramMessageParser;
 
 public final class Bot extends TelegramLongPollingCommandBot {
@@ -20,20 +17,11 @@ public final class Bot extends TelegramLongPollingCommandBot {
 	private final String BOT_NAME;
 	private final String BOT_TOKEN;
 
-
-
 	public Bot(String botName, String botToken) {
 		super();
 		this.BOT_NAME = botName;
 		this.BOT_TOKEN = botToken;
 		logger.debug("Name & Token are set");
-
-		/*
-		 * Список доступных команд. Не содержит scope. Выводится
-		 */
-		register(new StartCommand("start", "Стартовая команда"));
-		register(new SearchCommand("search", "Список ключевых слов"));
-		register(new HelpCommand(this));
 	}
 
 	@Override
@@ -49,28 +37,28 @@ public final class Bot extends TelegramLongPollingCommandBot {
 	@Override
 	public void onRegister() {
 		executeCommand(BotCommandsConfig.getDefaultCommands());
-		executeCommand(BotCommandsConfig.getAdminCommands());
-	}
-	
-	private void executeCommand(BotApiMethod<?> method) {
-		try {
-			execute(method);
-		} catch (TelegramApiException e) {
-			e.printStackTrace();
-			logger.debug(e.getMessage());
+		executeCommand(BotCommandsConfig.getAdminCommands());	
 		}
-	}
-	
-	/*
-	 * Метод обработки всех сообщений от пользователя, которые не являются командой
-	 */
-	@Override
-	public void processNonCommandUpdate(Update update) {
-		TelegramMessageParser parser = new TelegramMessageParser(this, update.getMessage());
 		
-		parser.parseMessage();
-	}
+		private void executeCommand(BotApiMethod<?> method) {
+			try {
+				execute(method);
+			} catch (TelegramApiException e) {
+				e.printStackTrace();
+				logger.debug(e.getMessage());
+			}
+		}
+		
+		/*
+		* Метод обработки всех сообщений от пользователя, которые не являются командой
+		*/
+		@Override
+		public void processNonCommandUpdate(Update update) {
+			TelegramMessageParser parser = new TelegramMessageParser(this, update.getMessage());
 
+			parser.parseMessage();
+		}
+		
 	public class MyDeleteMessage implements Runnable {
 
 		private Long chatId;
@@ -163,4 +151,5 @@ public final class Bot extends TelegramLongPollingCommandBot {
 			}
 		}
 	}
+	
 }

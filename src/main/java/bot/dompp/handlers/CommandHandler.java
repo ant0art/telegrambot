@@ -6,8 +6,11 @@ import org.telegram.telegrambots.extensions.bots.commandbot.CommandMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.bots.AbsSender;
 import bot.dompp.commands.BaseCommand;
-import bot.dompp.commands.DeleteCommand;
-import bot.dompp.commands.UnknownCommand;
+import bot.dompp.commands.admin.DeleteCommand;
+import bot.dompp.commands.service.HelpCommand;
+import bot.dompp.commands.service.SearchCommand;
+import bot.dompp.commands.service.StartCommand;
+import bot.dompp.commands.service.UnknownCommand;
 
 public class CommandHandler extends BaseHandler {
 	private AbsSender absSender;
@@ -30,25 +33,31 @@ public class CommandHandler extends BaseHandler {
 	}
 
 	public BaseCommand getCommandHandler(Message message) {
-		BaseCommand command;
 		CommandMessage commandMessage = new CommandMessage(message);
 
 		logger.info(String.format("Command Message is %n%n %s %n ",
 				commandMessage.getCommandMessage()));
-		logger.info(String.format("Command Text is %n%n %s %n ", commandMessage.getCommandText()));
+		// logger.info(String.format("Command Text is %n%n %s %n ",
+		// commandMessage.getCommandText()));
 		logger.info(String.format("Command Message Text is %n%n %s %n ",
 				commandMessage.getMessageText()));
-		String comText = commandMessage.getCommandText();
-		getCommandWithoutBotName(comText);
+		String comText = commandMessage.getMessageText();
+		comText = getCommandWithoutBotName(comText);
+		logger.info(String.format("ComText is %s", comText));
+
 		switch (comText) {
-			case "delete":
-				command = new DeleteCommand();
-				break;
+			case "/start":
+				return new StartCommand();
+			case "/delete":
+				return new DeleteCommand();
+			case "/search":
+				return new SearchCommand();
+			case "/help":
+				return new HelpCommand();
 			default:
 				// для случаев незарегистрированных команд
-				command = new UnknownCommand();
+				return new UnknownCommand();
 		}
-		return command;
 	}
 
 	private static String getCommandWithoutBotName(String command) {
