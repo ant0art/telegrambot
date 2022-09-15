@@ -1,7 +1,7 @@
 *.log
 *.properties
 *.editorconfig
-storage/*.json
+**/storage/*.json
 
 .vscode/
 .mvn/
