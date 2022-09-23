@@ -16,6 +16,10 @@ public class DeleteCommand extends BaseCommand {
 
 	@Override
 	public void runCommand(AbsSender absSender, Message message) {
+		deleteMessage(absSender, message);
+	}
+
+	public void deleteMessage(AbsSender absSender, Message message) {
 		DeleteMessage messToDel = new DeleteMessage();
 		messToDel.setChatId(message.getChatId());
 		Message reply = message.getReplyToMessage();
@@ -31,7 +35,4 @@ public class DeleteCommand extends BaseCommand {
 			}
 		}
 	}
-
-
-
 }

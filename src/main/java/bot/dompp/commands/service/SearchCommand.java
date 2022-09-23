@@ -28,11 +28,8 @@ public class SearchCommand extends BaseCommand {
 				new MyJsonParser(EnvVars.getVal("DATA")).getPossibleRequests("keys");
 
 		for (Map.Entry<String, JsonArray> entries : mp.entrySet()) {
-			logger.info("Catch the pair key value");
 			String request = entries.getKey();
-			logger.info("Got the key");
 			JsonArray values = entries.getValue().getAsJsonArray();
-			logger.info("Got the value");
 
 			response.append(String.format("*%s*%n", request)).append("Доступные: ");
 			for (int i = 0; i < values.size(); i++) {

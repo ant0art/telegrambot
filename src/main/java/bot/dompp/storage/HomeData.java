@@ -16,6 +16,8 @@ import java.util.regex.Pattern;
 import javax.annotation.Nonnull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -32,13 +34,15 @@ public class HomeData extends BotLibrary {
 	static final Map<String, String> getenv = System.getenv();
 
 	private static String path = EnvVars.getVal("DATA");
-	
+
 	public class HomeDataObj {
 		private String[] keys;
 		private String[] regex;
 		private String title;
 		private JsonObject data;
 		private String[] tpl;
+
+		private InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
 
 		public HomeDataObj() {
 			this.keys = new String[] {};
@@ -226,6 +230,22 @@ public class HomeData extends BotLibrary {
 			}
 		}
 
+		/**
+		 * This method returns an element of the database data field according
+		 * to the name
+		 * 
+		 * @param name contains the name of the parameter from the data area
+		 * @return JsonElement by chosen param
+		 */
+		public JsonElement getHomeDataObjElement(String name) throws NullPointerException {
+			JsonElement jElement = null;
+			for (Map.Entry<String, JsonElement> pair : getData().entrySet()) {
+				if (pair.getKey().equals(name))
+					jElement = pair.getValue();
+			}
+			return jElement;
+		}
+
 	}
 
 	public static HomeDataObj hasMatch(String userMessage) {
@@ -280,6 +300,8 @@ public class HomeData extends BotLibrary {
 				for (Map.Entry<String, JsonElement> dEntry2 : dataObj.entrySet()) {
 					// если в шаблоне regex выражение совпадет с ключем data, едем
 					// дальше
+					if (tmp.equals("buttons"))
+						continue;
 					if (tmp.equals(dEntry2.getKey())) {
 						sBuilder.append(getDataString(dEntry2.getValue(), s, start, end))
 								.toString();
@@ -292,6 +314,46 @@ public class HomeData extends BotLibrary {
 		return replaceWithSlash(sBuilder.toString());
 	}
 
+	public static List<List<InlineKeyboardButton>> getKeyboard(HomeDataObj homeDataObj) {
+		JsonObject dataObj = homeDataObj.data;
+		List<InlineKeyboardButton> buttonsRow = new ArrayList<>();
+		List<List<InlineKeyboardButton>> inlineKeyboard = new ArrayList<>();
+		// проходимся по всем элементам области data
+		for (Map.Entry<String, JsonElement> pair : dataObj.entrySet()) {
+			// находим поле buttons
+			if (pair.getKey().equals("buttons")) {
+				// если поле имеется, то проходимся по значениям
+				for (JsonElement element : pair.getValue().getAsJsonArray()) {
+
+					// logger.info(String.format("element is |%s|",
+					// 		element.getAsString()));
+					//ищем значение в data, чтобы добавить название в кнопку, а текст в callback
+
+					//element1 = {{phones}}
+					String tmp = element.getAsString();
+					String ref = "{{" + tmp + "}}";
+					
+					String response =
+							getDataString(homeDataObj.getHomeDataObjElement(tmp),
+									ref, 0, ref.length());
+
+					logger.info(String.format("response is |%s|", response));
+					InlineKeyboardButton button = new InlineKeyboardButton();
+
+					// logger.info(String.format("JsonElement needed to be String is |%s|",
+					// 		homeDataObj.getHomeDataObjElement(element.getAsString())));
+					// button.setCallbackData("тест");
+					button.setText(tmp);
+					button.setCallbackData("тест");
+					buttonsRow.add(button);
+				}
+			}
+		}
+		inlineKeyboard.add(buttonsRow);
+		return inlineKeyboard;
+	}
+
+
 	/**
 	 * @param sElement takes JsonElement from data field
 	 * @param regTmp contains data option in braces
@@ -300,6 +362,7 @@ public class HomeData extends BotLibrary {
 	 * @return String for template request
 	 */
 	public static String getDataString(JsonElement sElement, String regTmp, int start, int end) {
+		// String result = regTmp.replaceAll("[{}]", "");
 		String result = regTmp.substring(start + 2, end - 2);
 		logger.info("start metod getDataString");
 		switch (result) {

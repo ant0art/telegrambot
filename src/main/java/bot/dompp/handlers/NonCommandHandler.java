@@ -7,10 +7,13 @@ import org.telegram.telegrambots.meta.api.methods.send.SendLocation;
 import org.telegram.telegrambots.meta.api.methods.send.SendMediaGroup;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
+import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
 import org.telegram.telegrambots.meta.api.objects.InputFile;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.media.InputMedia;
 import org.telegram.telegrambots.meta.api.objects.media.InputMediaPhoto;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import org.telegram.telegrambots.meta.bots.AbsSender;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import com.google.gson.Gson;
@@ -35,14 +38,22 @@ public class NonCommandHandler extends BaseHandler {
 
 	@Override
 	public void run() {
+
+		//на этом этапе мы уже поняли, что перед нами сообщение без команды
+		//обработчик должен вернуть ответ, который составлен из фото, текста, кнопок команд
+
+		//1. Понять, что сообщение пользователя из базы данных
+		//2. Обработать сообщение по шаблону
+		//2.1. 
+		//3. Вывести ответ
+
 		String response = parseMessage(message);
 
 		try {
 			SendMessage mess = SendMessage.builder().chatId(message.getChatId())
 					.parseMode(MARKDOWN_V2).text(response).build();
-			SendPhoto photoMess = new SendPhoto();
-			photoMess.setChatId(message.getChatId());
-			photoMess.setParseMode(MARKDOWN_V2);
+			
+			mess.setReplyMarkup(setInlineKeyboardMarkup(message));
 
 			String[] photo = getPhotoForAnswer(message);
 			Double[] lonlat = getLonlatForAnswer(message);
@@ -52,6 +63,9 @@ public class NonCommandHandler extends BaseHandler {
 					absSender.execute(mess);
 					break;
 				case 1:
+					SendPhoto photoMess = new SendPhoto();
+					photoMess.setChatId(message.getChatId());
+					photoMess.setParseMode(MARKDOWN_V2);
 					/* Alone Photo without caption */
 					photoMess.setPhoto(new InputFile(photo[0]));
 					if (response.length() > 1024) {
@@ -87,7 +101,11 @@ public class NonCommandHandler extends BaseHandler {
 		}
 	}
 
+
+	//переписать, чтобы возвращало Message
 	public String parseMessage(Message inMess) {
+
+
 		String userName = Utils.getUserName(inMess);
 		/* Default answer */
 		String response = String.format(
@@ -97,11 +115,23 @@ public class NonCommandHandler extends BaseHandler {
 		/* Answer to match found mess by template */
 		if (inMess.getText() != null) {
 			HomeDataObj newObj = HomeData.hasMatch(inMess.getText());
+			//если есть
 			if (newObj != null) {
 				response = HomeData.setMatchAnswer(newObj);
 			}
 		}
 		return response;
+	}
+
+	public InlineKeyboardMarkup setInlineKeyboardMarkup(Message inMess) throws NullPointerException{
+		InlineKeyboardMarkup ikbm = new InlineKeyboardMarkup();
+		if (inMess.getText() != null) {
+			HomeDataObj newObj = HomeData.hasMatch(inMess.getText());
+			if (newObj != null) {
+				ikbm.setKeyboard(HomeData.getKeyboard(newObj));
+			}
+		}
+		return ikbm;
 	}
 
 
@@ -159,5 +189,18 @@ public class NonCommandHandler extends BaseHandler {
 		}
 
 		return mediaGroup;
+	}
+
+	public void getRelativeInlineKeyboard(AbsSender absSender, Message message) {
+
+		//1. Кнопки должны добавляться с каждым проходом по дополнительным полям объекта
+		//2. 
+		InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
+		inlineKeyboardMarkup.getKeyboard(); //сюда передается List of InlineKeyboardButton
+
+		InlineKeyboardButton inlineKeyboardButton = new InlineKeyboardButton();
+		// inlineKeyboardButton.setCallbackData();
+		EditMessageText editMessageText = new EditMessageText();
+
 	}
 }
